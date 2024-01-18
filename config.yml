@@ -1,0 +1,13 @@
+# Discord Bot Core
+# This file must be placed in the same folder as where you run `npm start` or `node .` (for ./dist)
+
+token: "your amazing bot token"
+
+# =====================================
+# =           STYLE OPTIONS           =
+# =====================================
+embeds:
+  primary:
+    color: "#548CFF"
+  error:
+    color: "#F14A16"
