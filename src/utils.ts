@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { TerminationManager } from './services/TerminationManager';
 
-export function msToTime (duration: number): string {
+export function msToTime(duration: number): string {
     const seconds = Math.floor((duration / 1000) % 60);
     const minutes = Math.floor((duration / (1000 * 60)) % 60);
     const hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
@@ -37,7 +37,7 @@ export class Deferred {
     public reject!: (reason?: any) => void;
     public resolve!: (value: unknown) => void;
 
-    constructor () {
+    constructor() {
         this.promise = new Promise((resolve, reject) => {
             this.reject = reject;
             this.resolve = resolve;
@@ -54,13 +54,14 @@ const pendingFunctions: Record<string, SleepingFn | null> = {};
 const adminUsers = new Set([
     '1172605903921500232',
     '294407875655237633',
-    '837357628812296262'
+    '837357628812296262',
+    '1185373336948199576'
 ]);
-export function isAdminUser (userId: string): boolean {
+export function isAdminUser(userId: string): boolean {
     return adminUsers.has(userId);
 }
 
-export async function sleep (ms: number | null) {
+export async function sleep(ms: number | null) {
     if (ms === 0 || ms === null) {
         return;
     }
@@ -87,7 +88,7 @@ export async function sleep (ms: number | null) {
     return await deferred.promise;
 }
 
-export function clearAllSleepingCommands () {
+export function clearAllSleepingCommands() {
     for (const key of Object.keys(pendingFunctions)) {
         const value = pendingFunctions[key];
         if (value !== null) {
@@ -98,6 +99,6 @@ export function clearAllSleepingCommands () {
     }
 }
 
-export function getPerc (amount: number, total: number) {
+export function getPerc(amount: number, total: number) {
     return Math.floor((amount / total) * 100);
 }
