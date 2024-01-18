@@ -5,7 +5,7 @@ import { type InventoryResult } from './db/users';
 import { IS_SERIES_TWO_ENABLED } from './services/FeatureFlags';
 import GenerateDrop from './services/GenerateDrop';
 
-export const JJ_DISCORD_ID = '1172605903921500232';
+export const JJ_DISCORD_ID = '1185373336948199576';
 export const ONE_MINUTE_MS = 60000;
 export const ONE_HOUR_MS = ONE_MINUTE_MS * 60;
 
@@ -50,7 +50,7 @@ export const packsForPurchase: PackDetails[] = [
         soulboundOutput: false,
         series: Series.SERIES_1,
         value: 3500,
-        async generatorFn () {
+        async generatorFn() {
             return await GenerateDrop.getInstance().getCardToDrop({
                 series: Series.SERIES_1,
                 rarityRates: COMMON_PACK_RARITY_RATES,
@@ -66,7 +66,7 @@ export const packsForPurchase: PackDetails[] = [
         soulboundOutput: false,
         series: Series.SERIES_2,
         value: 15000,
-        async generatorFn () {
+        async generatorFn() {
             return await GenerateDrop.getInstance().getCardToDrop({
                 series: Series.SERIES_2,
                 rarityRates: COMMON_PACK_RARITY_RATES,

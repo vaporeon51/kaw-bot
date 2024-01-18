@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import { BotSettingKey, getBotSetting } from '../db/botSettings';
 import ClientManager from './ClientManager';
 
-const JJ_USER_ID = '1172605903921500232';
+const JJ_USER_ID = '1185373336948199576';
 export const JJ_AUDIT_CONTACT_LINE = `<@${JJ_USER_ID}> please check logs`;
 
 export default class AuditLogHandler {
@@ -20,7 +20,7 @@ export default class AuditLogHandler {
         return this.channelId;
     };
 
-    public async publishAuditMessageError (errorTitle: string, errorDetails: string[]) {
+    public async publishAuditMessageError(errorTitle: string, errorDetails: string[]) {
         try {
             const client = ClientManager.getInstance().getClient();
             const channelId = await this.retrieveChannelId();
@@ -44,7 +44,7 @@ export default class AuditLogHandler {
         }
     }
 
-    public async publicAuditMessageCustom (title: string, description: string[]) {
+    public async publicAuditMessageCustom(title: string, description: string[]) {
         const embed = new Discord.EmbedBuilder()
             .setTitle(`Audit Event - ${title}`)
             .setDescription(description.join('\n'));
@@ -66,7 +66,7 @@ export default class AuditLogHandler {
         }
     }
 
-    public async publishAuditMessage (commandName: string, userId: string | null, additionalInfo: string[], customTitle?: string) {
+    public async publishAuditMessage(commandName: string, userId: string | null, additionalInfo: string[], customTitle?: string) {
         const description = [
             userId ? `User that executed command: <@${userId}>` : '',
             ...additionalInfo
@@ -93,7 +93,7 @@ export default class AuditLogHandler {
         }
     }
 
-    public static getInstance (): AuditLogHandler {
+    public static getInstance(): AuditLogHandler {
         if (!AuditLogHandler.instance) {
             AuditLogHandler.instance = new AuditLogHandler();
         }
