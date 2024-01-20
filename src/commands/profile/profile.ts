@@ -6,9 +6,44 @@ import { codeItem } from '../../embedHelpers';
 import { COIN_ICON } from '../../cardConstants';
 import { getCardListString } from '../../common/cardDisplay';
 import { getInstanceConfig } from '../../config/config';
-import { Series, Rarity } from '../../config/types';
+import { Series, Rarity, type AchievementConfig } from '../../config/types';
 import { parseStringToCardsIds } from '../../common/optionParsing';
 import CardCache from '../../services/CardCache';
+
+const achievementConfigs: AchievementConfig[] = [
+    { name: 'Card Collector', icon: '<:CardCollector:1198245592183349299>', threshold: 2 },
+    { name: 'Card Disciple', icon: '<:CardDisciple:1198245699565928568>', threshold: 4 },
+    { name: 'Card Practitioner', icon: '<:CardPractitioner:1198245822228336701>', threshold: 6 },
+    { name: 'Card Master', icon: '<:CardMaster:1198246438442893422>', threshold: 8 },
+    { name: 'Card Grandmaster', icon: '<:CardGrandmaster:1198246587835633704>', threshold: 10 },
+    { name: 'Card Spirit', icon: '<:CardSpirit:1198246728911032412>', threshold: 12 },
+    { name: 'Card King', icon: '<:CardKing:1198246805419331616>', threshold: 14 },
+    { name: 'Card Emperor', icon: '<:CardEmperor:1198246978753151116>', threshold: 16 },
+    { name: 'Card Ancestor', icon: '<:CardAncestor:1198247075339587594>', threshold: 18 },
+    { name: 'Card Venerate', icon: '<:CardVenerate:1198247227768971384>', threshold: 20 },
+    { name: 'Card Saint', icon: '<:CardSaint:1198247543709110322>', threshold: 22 },
+    { name: 'Card God', icon: '<:CardGod:1198247624189431859>', threshold: 24 }
+];
+
+function getAchievementText (count: number): string {
+    let closestName: string | null = null;
+    let closestIcon: string | null = null;
+    let closestThreshold = 0;
+
+    for (const achievementConfig of achievementConfigs) {
+        if (achievementConfig.threshold <= count && achievementConfig.threshold > closestThreshold) {
+            closestName = achievementConfig.name;
+            closestIcon = achievementConfig.icon;
+            closestThreshold = count - achievementConfig.threshold;
+        }
+    }
+
+    if (closestThreshold === 0) {
+        return 'No achievements yet';
+    }
+
+    return `${closestIcon} [${closestName}] ${count} set(s) completed`;
+}
 
 const command: CommandInterface = {
     groupName: 'profile',
@@ -40,6 +75,10 @@ const command: CommandInterface = {
 
         descriptionLines.push('**Bio:**');
         descriptionLines.push(`> ${profileData.bio}`);
+        descriptionLines.push('');
+
+        descriptionLines.push('**Achievements:**');
+        descriptionLines.push(`> ${getAchievementText(profileData.numCompletedGroups)}`);
         descriptionLines.push('');
 
         descriptionLines.push('**Balance:**');
