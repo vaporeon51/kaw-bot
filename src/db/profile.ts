@@ -120,6 +120,17 @@ export const getFavoriteCardDetails = async (userId: string, options?: ExecuteSQ
     return convertRowToCardData(result.rows[0]);
 };
 
+export const getNumCompletedGroups = async (userId: string, options?: ExecuteSQLOptions) => {
+    const sql = `SELECT groups FROM completed_groups
+    WHERE user_id = ${escape.literal(userId)}`;
+
+    const result = await DbConnectionHandler.getInstance().executeSQL(sql, options);
+    if (result.rowCount === 0) {
+        return 0;
+    }
+    return Number(result.rows[0].groups.length);
+};
+
 export const getProfileInfo = async (userId: string, options?: ExecuteSQLOptions) => {
     const [
         totalsByRarity,
@@ -127,14 +138,16 @@ export const getProfileInfo = async (userId: string, options?: ExecuteSQLOptions
         balance,
         favoriteCard,
         favoriteCardOwnership,
-        lookingForCards
+        lookingForCards,
+        numCompletedGroups
     ] = await Promise.all([
         getTotalCardsByRarity(userId, options),
         getProfileBioText(userId, options),
         CurrencyManager.getInstance().balance(userId),
         getFavoriteCardDetails(userId, options),
         doesUserOwnFavoriteCard(userId, options),
-        getLookingForCards(userId, options)
+        getLookingForCards(userId, options),
+        getNumCompletedGroups(userId, options)
     ]);
 
     return {
@@ -143,6 +156,7 @@ export const getProfileInfo = async (userId: string, options?: ExecuteSQLOptions
         totalsByRarity,
         favoriteCard,
         favoriteCardOwnership,
-        lookingForCards
+        lookingForCards,
+        numCompletedGroups
     };
 };

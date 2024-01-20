@@ -58,3 +58,9 @@ export interface InstanceConfig {
     getIconForRarity: (rarity: Rarity, series: Series) => string
     getNextRarity: (rarity: Rarity) => Rarity | null
 }
+
+export interface AchievementConfig {
+    name: string
+    icon: string
+    threshold: number
+}
