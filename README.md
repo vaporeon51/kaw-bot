@@ -7,7 +7,7 @@
 - Run `npm install`
 - Run `npm migrate up`
 - Start the app with `npm run start` and check that it starts up correctly
-- Open up the local database in pgadmin and run the script in `scripts/db_backup.sql`
+- Open up the local database in pgadmin and run the scripts `scripts/db_backup.sql` and `scripts/quiz_backup.sql`
 
 # Test in Discord
 
