@@ -34,7 +34,7 @@ function getAchievementText (count: number): string {
         if (achievementConfig.threshold <= count && achievementConfig.threshold > closestThreshold) {
             closestName = achievementConfig.name;
             closestIcon = achievementConfig.icon;
-            closestThreshold = count - achievementConfig.threshold;
+            closestThreshold = achievementConfig.threshold;
         }
     }
 
