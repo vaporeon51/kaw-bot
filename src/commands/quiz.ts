@@ -311,12 +311,12 @@ const command: CommandInterface = {
                 reportCollector.on('collect', safeWrapperFn('onReportBtnClick', boundOnReportBtnClick));
                 reportCollector.on('end', async () => {
                     CollectorHolder.getInstance().removeCollector(collectorId);
-                    await response.edit({
+                    await interaction.editReply({
                         components: []
                     });
                 });
-            } else if (reason !== 'success' && reason !== 'failure') {
-                await response.edit({
+            } else if (reason !== 'btnClicked') {
+                await interaction.editReply({
                     content: 'Quiz ended - bot restarting',
                     embeds: [],
                     components: []
