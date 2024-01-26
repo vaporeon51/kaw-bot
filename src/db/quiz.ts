@@ -43,19 +43,19 @@ const mapIdolStr = (row: any): string => {
 
 export const getScoreDifferenceForResult = (correct: boolean, winStreak: number) => {
     if (correct) {
-        if (winStreak >= 3) {
-            return 2;
-        } else if (winStreak >= 10) {
+        if (winStreak >= 10) {
             return 5;
+        } else if (winStreak >= 3) {
+            return 2;
         } else {
             return 1;
         }
     }
 
-    if (winStreak <= -1) {
-        return -2;
-    } else if (winStreak <= -2) {
+    if (winStreak <= -10) {
         return -3;
+    } else if (winStreak <= -5) {
+        return -2;
     } else {
         return -1;
     }

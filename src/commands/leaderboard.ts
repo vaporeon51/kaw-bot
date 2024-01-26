@@ -1,7 +1,8 @@
 import * as Discord from 'discord.js';
 import { type CommandInterface } from '../services/CommandInteractionManager';
-import { type LeaderboardEntry, getRarityScoredLeaderboard, getProgressLeaderboard } from '../db/users';
+import { type LeaderboardEntry, getRarityScoredLeaderboard, getProgressLeaderboard, getQuizLeaderboard } from '../db/users';
 import { handleListBasedEmbed, type Page } from '../common/listBasedEmbed';
+import { getCurrentQuizWeek } from '../db/quiz';
 
 const PAGINATION_SIZE = 10.0;
 export const generatePagesBasedOnLeaderboard = (title: string, leaderboard: LeaderboardEntry[], yourLeaderboardRank: string) => {
@@ -48,6 +49,7 @@ function generateLeaderboardEmbedPage (title: string, leaderboard: LeaderboardEn
 }
 
 enum LeaderboardSortType {
+    QUIZ = 'Quiz',
     SCORE = 'Score',
     PROGRESS = 'Progress'
 }
@@ -75,7 +77,23 @@ const command: CommandInterface = {
             });
         }
 
-        const leaderboard = await (type === LeaderboardSortType.SCORE ? getRarityScoredLeaderboard() : getProgressLeaderboard());
+        let leaderboard, title;
+        switch (type) {
+            case LeaderboardSortType.SCORE:
+                leaderboard = await getRarityScoredLeaderboard();
+                title = 'Server Leaderboard (Score)';
+                break;
+
+            case LeaderboardSortType.PROGRESS:
+                leaderboard = await getProgressLeaderboard();
+                title = 'Server Leaderboard (Progress)';
+                break;
+
+            default:
+                leaderboard = await getQuizLeaderboard();
+                title = `Quiz Leaderboard (Week ${getCurrentQuizWeek(Date.now())})`;
+        }
+
         if (!leaderboard) {
             await interaction.reply({
                 content: 'Unable to load leaderboard, please try again',
@@ -84,7 +102,6 @@ const command: CommandInterface = {
             return;
         }
 
-        const title = type === LeaderboardSortType.SCORE ? 'Server Leaderboard (Score)' : 'Server Leaderboard (Progress)';
         const yourLeaderboardRank = leaderboard.findIndex((item) => item.userId === interaction.user.id) + 1;
         const stringfiedRank = yourLeaderboardRank === 0 ? 'Unknown' : yourLeaderboardRank.toString();
 
