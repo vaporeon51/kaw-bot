@@ -5,3 +5,4 @@ logs/
 .flaskenv*
 !.env.project
 !.env.vault
+.devcontainer/
