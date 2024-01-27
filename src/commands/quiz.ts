@@ -9,6 +9,7 @@ import { CollectorHolder } from '../services/CollectorHolder';
 import AuditLogHandler from '../services/AuditLogHandler';
 import DbConnectionHandler, { type ExecuteSQLOptions } from '../services/DbConnectionHandler';
 import CooldownRetriever, { Cooldowns } from '../services/CooldownRetriever';
+import CooldownNotifier from '../services/CooldownNotifier';
 
 const reportFailedImageLoadId = 'reportFailedImageLoad';
 
@@ -126,12 +127,12 @@ const createFailureEmbed = (
     const embed = new Discord.EmbedBuilder();
     embed.setAuthor({
         iconURL: interaction.user.avatarURL() ?? undefined,
-        name: 'Finished Quiz (Failure)'
+        name: 'Finished Quiz'
     });
 
     embed.setTitle(getQuestionTextBaedOnType(quizQuestion.type));
     const descriptionLines = [
-        '❌ **Incorrect** (Timed out)'
+        '❌ **Incorrect**'
     ];
     embed.setDescription(descriptionLines.join('\n'));
     embed.setColor('#D10000');
@@ -202,6 +203,7 @@ const quizUpdateTransaction = async (
 
         await createPublicMessage(interaction, updateResult, options.success);
         await DbConnectionHandler.getInstance().executeSQL('COMMIT', executeSQLOptions);
+        await CooldownNotifier.getInstance().resetUserNotificationTimeoutForEvent(Cooldowns.QUIZ, interaction.user.id);
         return response;
     } catch (e) {
         await DbConnectionHandler.getInstance().executeSQL('ROLLBACK', executeSQLOptions);
