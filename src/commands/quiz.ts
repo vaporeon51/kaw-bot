@@ -60,7 +60,7 @@ const createPublicMessage = async (
     const lines = [
         `${codeItem(interaction.user.username)} got their question ${topText}`,
         '',
-        `Rating change: ${codeItem(ratingChangeStr)} (Now: ${codeItem(updateQuizStatsResult.rankAfter.toLocaleString())})`,
+        `New Rating: ${codeItem(updateQuizStatsResult.rankAfter.toLocaleString())} (Change: ${codeItem(ratingChangeStr)})`,
         `Win streak: ${codeItem(updateQuizStatsResult.winStreak.toLocaleString())}`
     ];
 
