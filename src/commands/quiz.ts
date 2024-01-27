@@ -2,11 +2,13 @@
 import * as Discord from 'discord.js';
 import { type CommandInterface } from '../services/CommandInteractionManager';
 import { type QuizQuestion, QuizQuestionType, getRandomQuizQuestion, updateQuizStats, type UpdateQuizResults } from '../db/quiz';
+import { modifyUserLastQuizCompleted } from '../db/users';
 import { codeItem, createBtn, createRowWithBtns } from '../embedHelpers';
 import { safeWrapperFn } from '../common/safeCollector';
 import { CollectorHolder } from '../services/CollectorHolder';
 import AuditLogHandler from '../services/AuditLogHandler';
 import DbConnectionHandler, { type ExecuteSQLOptions } from '../services/DbConnectionHandler';
+import CooldownRetriever, { Cooldowns } from '../services/CooldownRetriever';
 
 const reportFailedImageLoadId = 'reportFailedImageLoad';
 
@@ -169,7 +171,7 @@ const quizUpdateTransaction = async (
     const executeSQLOptions: ExecuteSQLOptions = { client: connection };
     try {
         await DbConnectionHandler.getInstance().executeSQL('BEGIN', executeSQLOptions);
-
+        await modifyUserLastQuizCompleted(interaction.user.id, Date.now(), executeSQLOptions);
         const updateResult = await updateQuizStats(interaction.user.id, quizQuestion.id, options.success);
         if (updateResult === null) {
             throw new Error('Failed to update quiz stats');
@@ -215,6 +217,15 @@ const command: CommandInterface = {
     isPublicCommand: false,
     description: 'Play the quiz game in exchange for prizes!',
     execute: async (interaction: Discord.ChatInputCommandInteraction) => {
+        const cooldownInfo = await CooldownRetriever.getInstance().getCooldownInfo(interaction.user.id, Cooldowns.QUIZ);
+
+        if (!cooldownInfo.elapsed) {
+            await interaction.reply({
+                content: CooldownRetriever.getDisplayStringFromInfo(Cooldowns.QUIZ, cooldownInfo),
+                ephemeral: true
+            });
+            return;
+        }
         const quizQuestion = await getRandomQuizQuestion(interaction.user.id);
 
         if (quizQuestion === null) {

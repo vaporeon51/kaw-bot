@@ -458,6 +458,7 @@ export interface UserData {
     lastCardReceived: number | undefined
     lastBurnPerformed: number | undefined
     lastPackOpened: number | undefined
+    lastQuizCompleted: number | undefined
     allowedCooldownTypes: string[]
     hasPrivateInventory: boolean
 }
@@ -469,6 +470,7 @@ const mapRowToUserData = (row: any): UserData => {
         allowedCooldownTypes: row.notification_types,
         lastBurnPerformed: row.last_burn_performed ? Number.parseInt(row.last_burn_performed) : undefined,
         lastPackOpened: row.last_pack_opened ? Number.parseInt(row.last_pack_opened) : undefined,
+        lastQuizCompleted: row.last_quiz_completed ? Number.parseInt(row.last_quiz_completed) : undefined,
         hasPrivateInventory: row.private_inventory
     };
     return data;
@@ -607,6 +609,16 @@ export const modifyUserLastPackOpened = async (
 ): Promise<void> => {
     const lastReceivedVal = lastPackOpened ?? 'NULL';
     const sql = `UPDATE users SET last_pack_opened = ${lastReceivedVal} WHERE id = ${escape.literal(userId)}`;
+    await DbConnectionHandler.getInstance().executeSQL(sql, options);
+};
+
+export const modifyUserLastQuizCompleted = async (
+    userId: string,
+    lastQuizCompleted: number | null,
+    options?: ExecuteSQLOptions
+): Promise<void> => {
+    const lastReceivedVal = lastQuizCompleted ?? 'NULL';
+    const sql = `UPDATE users SET last_quiz_completed = ${lastReceivedVal} WHERE id = ${escape.literal(userId)}`;
     await DbConnectionHandler.getInstance().executeSQL(sql, options);
 };
 
