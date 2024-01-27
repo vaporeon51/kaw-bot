@@ -12,8 +12,6 @@ exports.up = pgm => {
             primaryKey: true,
         },
         win_streak: { type: 'INTEGER', notNull: true, default: 0 },
-        max_streak: { type: 'INTEGER', notNull: true, default: 0 },
-        min_streak: { type: 'INTEGER', notNull: true, default: 0 },
         ranking_value: { type: 'INTEGER', notNull: true, default: 0 },
         completed_questions: { type: 'integer[]', notNull: true, default: '{}' },
     });
