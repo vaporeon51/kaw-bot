@@ -2,7 +2,7 @@ import escape from 'pg-escape';
 import DbConnectionHandler, { type ExecuteSQLOptions } from '../services/DbConnectionHandler';
 import Configuration from '../services/Configuration';
 import { Rarity, type Series } from '../config/types';
-
+import { getCurrentQuizWeek } from '../db/quiz';
 export interface InventoryResult {
     count: number
     cardId: number
@@ -138,6 +138,26 @@ export const getRarityScoredLeaderboard = async (options?: ExecuteSQLOptions): P
         FROM card_to_user
         JOIN cards ON cards.id = card_to_user.card_id) AS "innerUserData"
         GROUP BY user_id
+        ORDER BY score DESC`;
+    const result = await DbConnectionHandler.getInstance().executeSQL(sql, options);
+
+    if (result.rowCount === 0) {
+        return null;
+    }
+    return result.rows.map((row: any) => {
+        const value: LeaderboardEntry = {
+            userId: row.user_id,
+            score: Number.parseInt(row.score)
+        };
+        return value;
+    });
+};
+
+export const getQuizLeaderboard = async (options?: ExecuteSQLOptions): Promise<LeaderboardEntry[] | null> => {
+    const quizWeek = getCurrentQuizWeek(Date.now());
+    const sql = `SELECT user_id, ranking_value as "score"
+        FROM quiz_stats
+        WHERE week = ${quizWeek}
         ORDER BY score DESC`;
     const result = await DbConnectionHandler.getInstance().executeSQL(sql, options);
 
