@@ -16,7 +16,6 @@ const roleSettingsProd: Record<Series, string> = {
     [Series.CHRISTMAS_2023]: ''
 };
 
-// 1/27 and 1/28 start of day GMT
 const quizRatingEpochStartDev = 1706313600000;
 const quizRatingEpochStartProd = 1706457600000;
 
