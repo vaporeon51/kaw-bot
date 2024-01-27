@@ -7,8 +7,9 @@ exports.up = pgm => {
         last_quiz_completed: {
             type: 'bigint',
             notNull: false
-    }
-});};
+        }
+    });
+};
 
 exports.down = pgm => {
     pgm.dropColumns('users', ['last_quiz_completed']);
