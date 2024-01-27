@@ -36,7 +36,7 @@ const cooldownToSettings: Record<Cooldowns, CooldownSettings> = {
     },
     [Cooldowns.QUIZ]: {
         userField: 'lastQuizCompleted',
-        defaultCooldown: ONE_MINUTE_MS * 15,
+        defaultCooldown: ONE_MINUTE_MS * 20,
         displayPrefix: 'Play quiz'
     }
 };

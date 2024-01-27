@@ -18,6 +18,5 @@ exports.up = pgm => {
 };
 
 exports.down = pgm => {
-    pgm.dropColumns('quiz_stats', 'week')
-    pgm.dropTable('quiz_stats_weekly_snapshot');
+    pgm.dropColumns('quiz_stats', 'week');
 };
