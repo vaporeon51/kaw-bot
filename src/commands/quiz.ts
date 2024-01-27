@@ -127,7 +127,7 @@ const createFailureEmbed = (
     const embed = new Discord.EmbedBuilder();
     embed.setAuthor({
         iconURL: interaction.user.avatarURL() ?? undefined,
-        name: 'Finished Quiz (Failure)'
+        name: 'Finished Quiz'
     });
 
     embed.setTitle(getQuestionTextBaedOnType(quizQuestion.type));
