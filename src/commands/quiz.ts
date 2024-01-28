@@ -216,7 +216,7 @@ const quizUpdateTransaction = async (
 const command: CommandInterface = {
     name: 'quiz',
     dmAllowed: false,
-    isPublicCommand: false,
+    isPublicCommand: true,
     description: 'Play the quiz game in exchange for prizes!',
     execute: async (interaction: Discord.ChatInputCommandInteraction) => {
         const cooldownInfo = await CooldownRetriever.getInstance().getCooldownInfo(interaction.user.id, Cooldowns.QUIZ);

@@ -16,8 +16,8 @@ const roleSettingsProd: Record<Series, string> = {
     [Series.CHRISTMAS_2023]: ''
 };
 
-const quizRatingEpochStartDev = 1704672000000;
-const quizRatingEpochStartProd = 1705276800000;
+const quizRatingEpochStartDev = 1706313600000;
+const quizRatingEpochStartProd = 1706457600000;
 
 const BOT_ANNOUCEMENT_CHANNEL_DEV = '1194324127645970462';
 const BOT_ANNOUCEMENT_CHANNEL_PROD = '1194318699159617596';
