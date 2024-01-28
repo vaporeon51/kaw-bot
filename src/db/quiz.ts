@@ -77,35 +77,39 @@ export interface UpdateQuizResults {
 export const updateQuizStats = async (userId: string, quizId: number, correct: boolean, options?: ExecuteSQLOptions): Promise<UpdateQuizResults | null> => {
     const week = getCurrentQuizWeek(Date.now());
     const currentData = `
-        SELECT win_streak, ranking_value FROM quiz_stats 
+        SELECT win_streak, max_streak, min_streak, ranking_value FROM quiz_stats 
         WHERE user_id = ${escape.literal(userId)} AND week = ${week}
         LIMIT 1`;
     const currentDataResult = await DbConnectionHandler.getInstance().executeSQL(currentData, options);
 
     let winStreak = 0;
+    let maxStreak = 0;
+    let minStreak = 0;
     let rankBefore = 0;
-    if (currentData === null) {
-        return null;
+    if (currentDataResult.rowCount === 1) {
+        winStreak = currentDataResult.rows[0].win_streak;
+        maxStreak = currentDataResult.rows[0].max_streak;
+        minStreak = currentDataResult.rows[0].min_streak;
+        rankBefore = currentDataResult.rows[0].ranking_value;
     }
 
-    winStreak = currentDataResult.rowCount === 1 ? currentDataResult.rows[0].win_streak : 0;
-    rankBefore = currentDataResult.rowCount === 1 ? currentDataResult.rows[0].ranking_value : 0;
-
     const scoreDifference = getScoreDifferenceForResult(correct, winStreak);
-    const initialScore = scoreDifference > 0 ? scoreDifference : 0;
-
-    const winStreakModifier = correct ? 1 : -winStreak;
-    const initialWinStreak = correct ? 1 : 0;
+    const rankAfter = Math.max(rankBefore + scoreDifference, 0);
+    const newWinStreak = correct ? Math.max(winStreak, 0) + 1 : Math.min(winStreak, 0) - 1;
+    maxStreak = Math.max(maxStreak, newWinStreak);
+    minStreak = Math.min(minStreak, newWinStreak);
 
     const sql = `INSERT INTO 
-    quiz_stats (user_id, week, ranking_value, win_streak, completed_questions) 
-    VALUES (${escape.literal(userId)}, ${week}, ${initialScore}, ${initialWinStreak}, ARRAY [${quizId}]::integer[])
+    quiz_stats (user_id, week, ranking_value, win_streak, max_streak, min_streak, completed_questions) 
+    VALUES (${escape.literal(userId)}, ${week}, ${rankAfter}, ${newWinStreak}, ${maxStreak}, ${minStreak}, ARRAY [${quizId}]::integer[])
     ON CONFLICT (user_id, week) 
         DO UPDATE
         SET 
         week = ${week},
-        win_streak = quiz_stats.win_streak + ${winStreakModifier}, 
-        ranking_value = GREATEST(quiz_stats.ranking_value + ${scoreDifference}, 0),
+        win_streak = ${newWinStreak}, 
+        max_streak = ${maxStreak}, 
+        min_streak = ${minStreak}, 
+        ranking_value = ${rankAfter},
         completed_questions = array_append(quiz_stats.completed_questions, ${quizId})
     RETURNING ranking_value;`;
     const result = await DbConnectionHandler.getInstance().executeSQL(sql, options);
@@ -115,7 +119,7 @@ export const updateQuizStats = async (userId: string, quizId: number, correct: b
     const rankingValue = result.rows[0].ranking_value;
 
     return {
-        winStreak: winStreak + winStreakModifier,
+        winStreak: newWinStreak,
         ratingChange: scoreDifference,
         rankBefore,
         rankAfter: rankingValue

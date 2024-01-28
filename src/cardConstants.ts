@@ -50,7 +50,7 @@ export const packsForPurchase: PackDetails[] = [
         soulboundOutput: false,
         series: Series.SERIES_1,
         value: 3500,
-        async generatorFn() {
+        async generatorFn () {
             return await GenerateDrop.getInstance().getCardToDrop({
                 series: Series.SERIES_1,
                 rarityRates: COMMON_PACK_RARITY_RATES,
@@ -66,7 +66,7 @@ export const packsForPurchase: PackDetails[] = [
         soulboundOutput: false,
         series: Series.SERIES_2,
         value: 15000,
-        async generatorFn() {
+        async generatorFn () {
             return await GenerateDrop.getInstance().getCardToDrop({
                 series: Series.SERIES_2,
                 rarityRates: COMMON_PACK_RARITY_RATES,

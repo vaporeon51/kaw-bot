@@ -2,11 +2,14 @@
 import * as Discord from 'discord.js';
 import { type CommandInterface } from '../services/CommandInteractionManager';
 import { type QuizQuestion, QuizQuestionType, getRandomQuizQuestion, updateQuizStats, type UpdateQuizResults } from '../db/quiz';
+import { modifyUserLastQuizCompleted } from '../db/users';
 import { codeItem, createBtn, createRowWithBtns } from '../embedHelpers';
 import { safeWrapperFn } from '../common/safeCollector';
 import { CollectorHolder } from '../services/CollectorHolder';
 import AuditLogHandler from '../services/AuditLogHandler';
 import DbConnectionHandler, { type ExecuteSQLOptions } from '../services/DbConnectionHandler';
+import CooldownRetriever, { Cooldowns } from '../services/CooldownRetriever';
+import CooldownNotifier from '../services/CooldownNotifier';
 
 const reportFailedImageLoadId = 'reportFailedImageLoad';
 
@@ -57,7 +60,7 @@ const createPublicMessage = async (
     const lines = [
         `${codeItem(interaction.user.username)} got their question ${topText}`,
         '',
-        `Rating change: ${codeItem(ratingChangeStr)} (Now: ${codeItem(updateQuizStatsResult.rankAfter.toLocaleString())})`,
+        `New Rating: ${codeItem(updateQuizStatsResult.rankAfter.toLocaleString())} (Change: ${codeItem(ratingChangeStr)})`,
         `Win streak: ${codeItem(updateQuizStatsResult.winStreak.toLocaleString())}`
     ];
 
@@ -124,12 +127,12 @@ const createFailureEmbed = (
     const embed = new Discord.EmbedBuilder();
     embed.setAuthor({
         iconURL: interaction.user.avatarURL() ?? undefined,
-        name: 'Finished Quiz (Failure)'
+        name: 'Finished Quiz'
     });
 
     embed.setTitle(getQuestionTextBaedOnType(quizQuestion.type));
     const descriptionLines = [
-        '❌ **Incorrect** (Timed out)'
+        '❌ **Incorrect**'
     ];
     embed.setDescription(descriptionLines.join('\n'));
     embed.setColor('#D10000');
@@ -169,7 +172,7 @@ const quizUpdateTransaction = async (
     const executeSQLOptions: ExecuteSQLOptions = { client: connection };
     try {
         await DbConnectionHandler.getInstance().executeSQL('BEGIN', executeSQLOptions);
-
+        await modifyUserLastQuizCompleted(interaction.user.id, Date.now(), executeSQLOptions);
         const updateResult = await updateQuizStats(interaction.user.id, quizQuestion.id, options.success);
         if (updateResult === null) {
             throw new Error('Failed to update quiz stats');
@@ -200,6 +203,7 @@ const quizUpdateTransaction = async (
 
         await createPublicMessage(interaction, updateResult, options.success);
         await DbConnectionHandler.getInstance().executeSQL('COMMIT', executeSQLOptions);
+        await CooldownNotifier.getInstance().resetUserNotificationTimeoutForEvent(Cooldowns.QUIZ, interaction.user.id);
         return response;
     } catch (e) {
         await DbConnectionHandler.getInstance().executeSQL('ROLLBACK', executeSQLOptions);
@@ -212,9 +216,18 @@ const quizUpdateTransaction = async (
 const command: CommandInterface = {
     name: 'quiz',
     dmAllowed: false,
-    isPublicCommand: false,
+    isPublicCommand: true,
     description: 'Play the quiz game in exchange for prizes!',
     execute: async (interaction: Discord.ChatInputCommandInteraction) => {
+        const cooldownInfo = await CooldownRetriever.getInstance().getCooldownInfo(interaction.user.id, Cooldowns.QUIZ);
+
+        if (!cooldownInfo.elapsed) {
+            await interaction.reply({
+                content: CooldownRetriever.getDisplayStringFromInfo(Cooldowns.QUIZ, cooldownInfo),
+                ephemeral: true
+            });
+            return;
+        }
         const quizQuestion = await getRandomQuizQuestion(interaction.user.id);
 
         if (quizQuestion === null) {

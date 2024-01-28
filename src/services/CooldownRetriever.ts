@@ -1,4 +1,4 @@
-import { CHECKMARK_ICON, ONE_HOUR_MS, TIMER_ICON } from '../cardConstants';
+import { CHECKMARK_ICON, ONE_HOUR_MS, TIMER_ICON, ONE_MINUTE_MS } from '../cardConstants';
 import { type UserData, getUserData } from '../db/users';
 import PermissionsCache from './PermissionsCache';
 
@@ -7,7 +7,8 @@ import PermissionsCache from './PermissionsCache';
 export enum Cooldowns {
     BURN = 'BURN',
     DROP = 'DROP',
-    OPEN_PACK = 'OPEN_PACK'
+    OPEN_PACK = 'OPEN_PACK',
+    QUIZ = 'QUIZ'
 }
 
 type KeysMatching<T, V> = { [K in keyof T]-?: T[K] extends V ? K : never }[keyof T];
@@ -32,6 +33,11 @@ const cooldownToSettings: Record<Cooldowns, CooldownSettings> = {
         userField: 'lastPackOpened',
         defaultCooldown: ONE_HOUR_MS * 12,
         displayPrefix: 'Open pack'
+    },
+    [Cooldowns.QUIZ]: {
+        userField: 'lastQuizCompleted',
+        defaultCooldown: ONE_MINUTE_MS * 20,
+        displayPrefix: 'Play quiz'
     }
 };
 
