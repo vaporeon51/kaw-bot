@@ -297,7 +297,7 @@ const command: CommandInterface = {
                 'Quiz report',
                 [
                     `User <@${interaction.user.id}> reported a quiz question as having a failed image load`,
-                    `Message: ${messageLink}`
+                    `Message: ${messageLink}\tQuestion ID: ${quizQuestion.id}`
                 ]);
             await btnInteraction.reply({
                 content: 'Issue reported to admins',

@@ -92,7 +92,7 @@ const command: CommandInterface = {
 
         await CooldownNotifier.getInstance().resetUserNotificationTimeout(targetMember.id);
         await AuditLogHandler.getInstance().publishAuditMessage(COMMAND_NAME, interaction.user.id, [
-            `User <@${targetMember.id}> had their drop timer reset`
+            `User <@${targetMember.id}> had their ${type} timer reset`
         ]);
     }
 };
