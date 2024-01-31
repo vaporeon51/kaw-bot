@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-confusing-void-expression */
 import * as Discord from 'discord.js';
-import { type CommandInterface } from '../services/CommandInteractionManager';
+import CommandInteractionManager, { type CommandInterface } from '../services/CommandInteractionManager';
 import { type QuizQuestion, QuizQuestionType, getRandomQuizQuestion, updateQuizStats, type UpdateQuizResults } from '../db/quiz';
 import { modifyUserLastQuizCompleted } from '../db/users';
 import { codeItem, createBtn, createRowWithBtns } from '../embedHelpers';
@@ -10,8 +10,14 @@ import AuditLogHandler from '../services/AuditLogHandler';
 import DbConnectionHandler, { type ExecuteSQLOptions } from '../services/DbConnectionHandler';
 import CooldownRetriever, { Cooldowns } from '../services/CooldownRetriever';
 import CooldownNotifier from '../services/CooldownNotifier';
+import { TerminationManager } from '../services/TerminationManager';
 
 const reportFailedImageLoadId = 'reportFailedImageLoad';
+
+const commandFinish = (userId: string) => {
+    CommandInteractionManager.getInstance().changeLockStatus(userId, false);
+    TerminationManager.getInstance().removeActiveCommand(userId);
+};
 
 const shuffleList = <T>(list: T[]) => {
     const newList = [...list];
@@ -213,132 +219,150 @@ const quizUpdateTransaction = async (
     }
 };
 
+const quizFn = async (interaction: Discord.ChatInputCommandInteraction) => {
+    const cooldownInfo = await CooldownRetriever.getInstance().getCooldownInfo(interaction.user.id, Cooldowns.QUIZ);
+
+    if (!cooldownInfo.elapsed) {
+        await interaction.reply({
+            content: CooldownRetriever.getDisplayStringFromInfo(Cooldowns.QUIZ, cooldownInfo),
+            ephemeral: true
+        });
+        commandFinish(interaction.user.id);
+        return;
+    }
+    const quizQuestion = await getRandomQuizQuestion(interaction.user.id);
+
+    if (quizQuestion === null) {
+        await interaction.reply({
+            content: 'There was an error getting a quiz question. Please try again later.',
+            ephemeral: true
+        });
+        commandFinish(interaction.user.id);
+        return;
+    }
+
+    if (typeof quizQuestion === 'string') {
+        await interaction.reply({
+            content: quizQuestion,
+            ephemeral: true
+        });
+        commandFinish(interaction.user.id);
+        return;
+    }
+
+    await interaction.deferReply({
+        ephemeral: true
+    });
+
+    quizQuestion.options = shuffleList(quizQuestion.options);
+
+    const [embed, btnRow] = createEmbed(quizQuestion, interaction);
+    const response = await interaction.editReply({
+        embeds: [embed],
+        components: [btnRow]
+    });
+
+    const collector = response.createMessageComponentCollector({ componentType: Discord.ComponentType.Button, time: 10_000 });
+
+    const onQuizBtnClick = async (btnInteraction: Discord.ButtonInteraction) => {
+        if (btnInteraction.user.id !== interaction.user.id) {
+            await btnInteraction.reply({
+                content: 'You cannot answer this question',
+                ephemeral: true
+            });
+            return;
+        }
+        collector.stop('btnClicked');
+
+        const answer = btnInteraction.customId;
+        const isCorrect = answer === quizQuestion.answer;
+        if (isCorrect) {
+            await quizUpdateTransaction(quizQuestion, interaction, btnInteraction, { success: true });
+            return;
+        }
+        await quizUpdateTransaction(quizQuestion, interaction, btnInteraction, { success: false });
+    };
+
+    const onReportBtnClick = async (reportCollector: Discord.InteractionCollector<Discord.ButtonInteraction>, btnInteraction: Discord.ButtonInteraction) => {
+        if (btnInteraction.customId !== reportFailedImageLoadId) {
+            return;
+        };
+
+        if (btnInteraction.user.id !== interaction.user.id) {
+            await btnInteraction.reply({
+                content: 'You cannot report this question',
+                ephemeral: true
+            });
+            return;
+        }
+
+        const messageLink = `https://discord.com/channels/${btnInteraction.guildId}/${btnInteraction.channelId}/${btnInteraction.message.id}`;
+        await AuditLogHandler.getInstance().publicAuditMessageCustom(
+            'Quiz report',
+            [
+                `User <@${interaction.user.id}> reported a quiz question as having a failed image load`,
+                `Message: ${messageLink}`
+            ]);
+        await btnInteraction.reply({
+            content: 'Issue reported to admins',
+            ephemeral: true,
+            components: []
+        });
+        reportCollector.stop('reported');
+        TerminationManager.getInstance().removeActiveCommand(interaction.user.id);
+    };
+
+    const collectorId = CollectorHolder.getInstance().addCollector(collector);
+
+    const onCollectorEnd = async (
+        collector: Discord.InteractionCollector<Discord.ButtonInteraction>,
+        reason: string
+    ) => {
+        CommandInteractionManager.getInstance().changeLockStatus(interaction.user.id, false);
+        CollectorHolder.getInstance().removeCollector(collectorId);
+        if (reason === 'time') {
+            const response = await quizUpdateTransaction(quizQuestion, interaction, null, { success: false, isTimeout: true });
+
+            const reportCollector = response.createMessageComponentCollector({ componentType: Discord.ComponentType.Button, time: 60_000 });
+            const collectorId = CollectorHolder.getInstance().addCollector(reportCollector);
+
+            const boundOnReportBtnClick = onReportBtnClick.bind(null, reportCollector);
+            reportCollector.on('collect', safeWrapperFn('onReportBtnClick', boundOnReportBtnClick));
+            reportCollector.on('end', async () => {
+                CollectorHolder.getInstance().removeCollector(collectorId);
+                await interaction.editReply({
+                    components: []
+                });
+                TerminationManager.getInstance().removeActiveCommand(interaction.user.id);
+            });
+            return;
+        } else if (reason !== 'btnClicked') {
+            await interaction.editReply({
+                content: 'Quiz ended - bot restarting',
+                embeds: [],
+                components: []
+            });
+        }
+        TerminationManager.getInstance().removeActiveCommand(interaction.user.id);
+    };
+
+    collector.on('collect', safeWrapperFn('onQuizBtnClick', onQuizBtnClick));
+    collector.on('end', safeWrapperFn('onQuizCollectorEnd', onCollectorEnd));
+};
+
 const command: CommandInterface = {
     name: 'quiz',
     dmAllowed: false,
     isPublicCommand: true,
     description: 'Play the quiz game in exchange for prizes!',
+    finishAfterExecute: false,
     execute: async (interaction: Discord.ChatInputCommandInteraction) => {
-        const cooldownInfo = await CooldownRetriever.getInstance().getCooldownInfo(interaction.user.id, Cooldowns.QUIZ);
-
-        if (!cooldownInfo.elapsed) {
-            await interaction.reply({
-                content: CooldownRetriever.getDisplayStringFromInfo(Cooldowns.QUIZ, cooldownInfo),
-                ephemeral: true
-            });
-            return;
+        try {
+            await quizFn(interaction);
+        } catch (e) {
+            CommandInteractionManager.getInstance().changeLockStatus(interaction.user.id, false);
+            throw e;
         }
-        const quizQuestion = await getRandomQuizQuestion(interaction.user.id);
-
-        if (quizQuestion === null) {
-            await interaction.reply({
-                content: 'There was an error getting a quiz question. Please try again later.',
-                ephemeral: true
-            });
-            return;
-        }
-
-        if (typeof quizQuestion === 'string') {
-            await interaction.reply({
-                content: quizQuestion,
-                ephemeral: true
-            });
-            return;
-        }
-
-        await interaction.deferReply({
-            ephemeral: true
-        });
-
-        quizQuestion.options = shuffleList(quizQuestion.options);
-
-        const [embed, btnRow] = createEmbed(quizQuestion, interaction);
-        const response = await interaction.editReply({
-            embeds: [embed],
-            components: [btnRow]
-        });
-
-        const collector = response.createMessageComponentCollector({ componentType: Discord.ComponentType.Button, time: 10_000 });
-
-        const onQuizBtnClick = async (btnInteraction: Discord.ButtonInteraction) => {
-            if (btnInteraction.user.id !== interaction.user.id) {
-                await btnInteraction.reply({
-                    content: 'You cannot answer this question',
-                    ephemeral: true
-                });
-                return;
-            }
-            collector.stop('btnClicked');
-
-            const answer = btnInteraction.customId;
-            const isCorrect = answer === quizQuestion.answer;
-            if (isCorrect) {
-                await quizUpdateTransaction(quizQuestion, interaction, btnInteraction, { success: true });
-                return;
-            }
-            await quizUpdateTransaction(quizQuestion, interaction, btnInteraction, { success: false });
-        };
-
-        const onReportBtnClick = async (reportCollector: Discord.InteractionCollector<Discord.ButtonInteraction>, btnInteraction: Discord.ButtonInteraction) => {
-            if (btnInteraction.customId !== reportFailedImageLoadId) {
-                return;
-            };
-
-            if (btnInteraction.user.id !== interaction.user.id) {
-                await btnInteraction.reply({
-                    content: 'You cannot report this question',
-                    ephemeral: true
-                });
-                return;
-            }
-
-            const messageLink = `https://discord.com/channels/${btnInteraction.guildId}/${btnInteraction.channelId}/${btnInteraction.message.id}`;
-            await AuditLogHandler.getInstance().publicAuditMessageCustom(
-                'Quiz report',
-                [
-                    `User <@${interaction.user.id}> reported a quiz question as having a failed image load`,
-                    `Message: ${messageLink}`
-                ]);
-            await btnInteraction.reply({
-                content: 'Issue reported to admins',
-                ephemeral: true,
-                components: []
-            });
-            reportCollector.stop('reported');
-        };
-
-        const collectorId = CollectorHolder.getInstance().addCollector(collector);
-
-        const onCollectorEnd = async (
-            collector: Discord.InteractionCollector<Discord.ButtonInteraction>,
-            reason: string
-        ) => {
-            CollectorHolder.getInstance().removeCollector(collectorId);
-            if (reason === 'time') {
-                const response = await quizUpdateTransaction(quizQuestion, interaction, null, { success: false, isTimeout: true });
-
-                const reportCollector = response.createMessageComponentCollector({ componentType: Discord.ComponentType.Button, time: 60_000 });
-                const collectorId = CollectorHolder.getInstance().addCollector(reportCollector);
-
-                const boundOnReportBtnClick = onReportBtnClick.bind(null, reportCollector);
-                reportCollector.on('collect', safeWrapperFn('onReportBtnClick', boundOnReportBtnClick));
-                reportCollector.on('end', async () => {
-                    CollectorHolder.getInstance().removeCollector(collectorId);
-                    await interaction.editReply({
-                        components: []
-                    });
-                });
-            } else if (reason !== 'btnClicked') {
-                await interaction.editReply({
-                    content: 'Quiz ended - bot restarting',
-                    embeds: [],
-                    components: []
-                });
-            }
-        };
-
-        collector.on('collect', safeWrapperFn('onQuizBtnClick', onQuizBtnClick));
-        collector.on('end', safeWrapperFn('onQuizCollectorEnd', onCollectorEnd));
     }
 };
 
