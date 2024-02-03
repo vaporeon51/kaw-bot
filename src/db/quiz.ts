@@ -74,6 +74,20 @@ export interface UpdateQuizResults {
     rankAfter: number
     rankBefore: number
 }
+
+export interface QuizWeekResults {
+    firstPlaceUserId: string
+    firstPlaceScore: number
+    secondPlaceUserId: string
+    secondPlaceScore: number
+    thirdPlaceUserId: string
+    thirdPlaceScore: number
+    longestWinStreakUserId: string
+    longestWinStreakNum: number
+    longestLossStreakUserId: string
+    longestLossStreakNum: number
+}
+
 export const updateQuizStats = async (userId: string, quizId: number, correct: boolean, options?: ExecuteSQLOptions): Promise<UpdateQuizResults | null> => {
     const week = getCurrentQuizWeek(Date.now());
     const currentData = `
@@ -168,4 +182,61 @@ export const getRandomQuizQuestion = async (userId: string, options?: ExecuteSQL
         const otherGroupsMapped = otherGroups.rows.map(i => i.name);
         return mapQuizQuestionGroup(result.rows[0], otherGroupsMapped);
     }
+};
+
+export const getQuizWeekSummary = async (week: number, options?: ExecuteSQLOptions): Promise<QuizWeekResults | null> => {
+    const top3Sql = `
+        SELECT user_id, ranking_value
+        FROM quiz_stats
+        WHERE week = ${week}
+        ORDER BY ranking_value DESC, array_length(completed_questions, 1) ASC
+        LIMIT 3;
+        `;
+    const top3Result = await DbConnectionHandler.getInstance().executeSQL(top3Sql, options);
+    if (top3Result === null || top3Result.rowCount === 0) {
+        return null;
+    }
+    if (top3Result.rows.length < 3) {
+        console.log(`Fewer than 3 players in week: ${top3Result.rowCount} players`);
+        return null;
+    }
+
+    const longestWinStreakSql = `
+        SELECT user_id, MAX(max_streak) AS longest_winning_streak
+        FROM quiz_stats
+        WHERE week = ${week}
+        GROUP BY user_id
+        ORDER BY longest_winning_streak DESC
+        LIMIT 1;
+    `;
+    const longestWinStreakResult = await DbConnectionHandler.getInstance().executeSQL(longestWinStreakSql, options);
+    if (longestWinStreakResult === null || longestWinStreakResult.rowCount === 0) {
+        return null;
+    }
+
+    const longestLossStreakSql = `
+        SELECT user_id, MAX(-min_streak) AS longest_loss_streak
+        FROM quiz_stats
+        WHERE week = ${week}
+        GROUP BY user_id
+        ORDER BY longest_loss_streak DESC
+        LIMIT 1;
+    `;
+    const longestLossStreakResult = await DbConnectionHandler.getInstance().executeSQL(longestLossStreakSql, options);
+    if (longestLossStreakResult === null || longestLossStreakResult.rowCount === 0) {
+        return null;
+    }
+
+    return {
+        firstPlaceUserId: top3Result.rows[0].user_id,
+        firstPlaceScore: top3Result.rows[0].ranking_value,
+        secondPlaceUserId: top3Result.rows[1].user_id,
+        secondPlaceScore: top3Result.rows[1].ranking_value,
+        thirdPlaceUserId: top3Result.rows[2].user_id,
+        thirdPlaceScore: top3Result.rows[2].ranking_value,
+        longestWinStreakUserId: longestWinStreakResult.rows[0].user_id,
+        longestWinStreakNum: longestWinStreakResult.rows[0].ranking_value,
+        longestLossStreakUserId: longestLossStreakResult.rows[0].user_id,
+        longestLossStreakNum: longestLossStreakResult.rows[0].user_id
+    };
 };
