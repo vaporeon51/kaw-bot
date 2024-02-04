@@ -74,6 +74,17 @@ export interface UpdateQuizResults {
     rankAfter: number
     rankBefore: number
 }
+
+export interface QuizWeekUserEntry {
+    userId: string
+    value: number
+}
+export interface QuizWeekResults {
+    topScorers: QuizWeekUserEntry[]
+    longestWinStreakers: QuizWeekUserEntry[]
+    longestLossStreakers: QuizWeekUserEntry[]
+}
+
 export const updateQuizStats = async (userId: string, quizId: number, correct: boolean, options?: ExecuteSQLOptions): Promise<UpdateQuizResults | null> => {
     const week = getCurrentQuizWeek(Date.now());
     const currentData = `
@@ -171,4 +182,73 @@ export const getRandomQuizQuestion = async (userId: string, options?: ExecuteSQL
         const otherGroupsMapped = otherGroups.rows.map(i => i.name);
         return mapQuizQuestionGroup(result.rows[0], otherGroupsMapped);
     }
+};
+
+export const getQuizWeekSummary = async (week: number, options?: ExecuteSQLOptions): Promise<QuizWeekResults | null> => {
+    const topScorers: QuizWeekUserEntry[] = [];
+    const longestWinStreakers: QuizWeekUserEntry[] = [];
+    const longestLossStreakers: QuizWeekUserEntry[] = [];
+
+    // Get top scorers
+    const topScorersSql = `
+        SELECT user_id, ranking_value
+        FROM quiz_stats
+        WHERE week = ${week}
+        ORDER BY ranking_value DESC, array_length(completed_questions, 1) ASC
+        LIMIT 3;
+        `;
+    const topScorersResult = await DbConnectionHandler.getInstance().executeSQL(topScorersSql, options);
+    if (topScorersResult === null || topScorersResult.rowCount === 0) {
+        return null;
+    }
+    topScorersResult.rows.forEach((row, index) => {
+        const userId = row.user_id;
+        const value = row.ranking_value;
+        const entry: QuizWeekUserEntry = { userId, value };
+        topScorers.push(entry);
+    });
+
+    // Get longest winning and losing streaks
+    const longestStreaksSql = `
+        WITH streak_values AS (
+            SELECT 
+            MAX(max_streak) as week_max_streak,
+            MIN(min_streak) as week_min_streak
+            FROM quiz_stats
+            WHERE week = ${week}
+        )
+        SELECT
+        user_id,
+        max_streak,
+        min_streak,
+        CASE WHEN stats.max_streak = vals.week_max_streak THEN 1 ELSE 0 END AS is_max_streak,
+        CASE WHEN stats.min_streak = vals.week_min_streak THEN 1 ELSE 0 END AS is_min_streak
+        FROM quiz_stats AS stats
+        JOIN streak_values AS vals
+        ON (stats.max_streak = vals.week_max_streak OR stats.min_streak = vals.week_min_streak)
+        WHERE stats.week = ${week};
+    `;
+    const longestStreaksResult = await DbConnectionHandler.getInstance().executeSQL(longestStreaksSql, options);
+    if (longestStreaksResult === null || longestStreaksResult.rowCount === 0) {
+        return null;
+    }
+    longestStreaksResult.rows.forEach((row, index) => {
+        const userId = row.user_id;
+        if (row.is_max_streak === 1) {
+            const value = row.max_streak;
+            const entry: QuizWeekUserEntry = { userId, value };
+            longestWinStreakers.push(entry);
+        }
+        if (row.is_min_streak) {
+            const value = -row.min_streak;
+            const entry: QuizWeekUserEntry = { userId, value };
+            longestLossStreakers.push(entry);
+        }
+    });
+
+    return {
+        topScorers,
+        longestWinStreakers,
+        longestLossStreakers
+    };
 };

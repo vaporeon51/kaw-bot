@@ -5,7 +5,8 @@ export enum BotSettingKey {
     AUDIT_LOG_CHANNEL_DATA_KEY = 'audit-log-channel-id',
     TRADE_CHANNEL_DATA_KEY = 'trade-channel-id',
     EVENT_CHANNEL_DATA_KEY = 'event-channel-id',
-    DROP_CHANNEL_DATA_KEY = 'drop-channel-id'
+    DROP_CHANNEL_DATA_KEY = 'drop-channel-id',
+    QUIZ_CHANNEL_DATA_KEY = 'quiz-channel-id'
 }
 
 export const getBotSetting = async (dataKey: BotSettingKey): Promise<string | null> => {
