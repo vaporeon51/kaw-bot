@@ -138,6 +138,7 @@ export const updateQuizStats = async (userId: string, quizId: number, correct: b
 };
 
 export const getRandomQuizQuestion = async (userId: string, options?: ExecuteSQLOptions) => {
+    const week = getCurrentQuizWeek(Date.now());
     const sql = `SELECT 
         quiz_image_questions.id AS "quiz_id", 
         image_url, 
@@ -148,7 +149,9 @@ export const getRandomQuizQuestion = async (userId: string, options?: ExecuteSQL
         idols.name
     FROM quiz_image_questions 
     LEFT JOIN idols on quiz_image_questions.idol = idols.id
-    WHERE quiz_image_questions.id NOT IN (SELECT unnest(completed_questions) FROM quiz_stats WHERE user_id = ${escape.literal(userId)})
+    WHERE quiz_image_questions.id NOT IN (
+        SELECT unnest(completed_questions) FROM quiz_stats WHERE user_id = ${escape.literal(userId)} AND week = ${week}
+    )
     ORDER BY RANDOM() LIMIT 1;`;
     const result = await DbConnectionHandler.getInstance().executeSQL(sql, options);
     if (result === null) {
