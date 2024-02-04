@@ -218,7 +218,8 @@ export const getQuizWeekSummary = async (week: number, options?: ExecuteSQLOptio
         user_id,
         max_streak,
         min_streak,
-        CASE WHEN stats.max_streak = vals.week_max_streak THEN 1 ELSE 0 END AS is_max_streak
+        CASE WHEN stats.max_streak = vals.week_max_streak THEN 1 ELSE 0 END AS is_max_streak,
+        CASE WHEN stats.min_streak = vals.week_min_streak THEN 1 ELSE 0 END AS is_min_streak
         FROM quiz_stats AS stats
         JOIN streak_values AS vals
         ON (stats.max_streak = vals.week_max_streak OR stats.min_streak = vals.week_min_streak)
@@ -234,7 +235,8 @@ export const getQuizWeekSummary = async (week: number, options?: ExecuteSQLOptio
             const value = row.max_streak;
             const entry: QuizWeekUserEntry = { userId, value };
             longestWinStreakers.push(entry);
-        } else {
+        }
+        if (row.is_min_streak) {
             const value = -row.min_streak;
             const entry: QuizWeekUserEntry = { userId, value };
             longestLossStreakers.push(entry);
