@@ -9,14 +9,16 @@ enum SetChannelNames {
     AUDIT = 'audit',
     TRADE = 'trade',
     EVENT = 'event',
-    DROP = 'drop'
+    DROP = 'drop',
+    QUIZ = 'quiz'
 }
 
 const channelTypeToBotSetting: Record<SetChannelNames, BotSettingKey> = {
     [SetChannelNames.AUDIT]: BotSettingKey.AUDIT_LOG_CHANNEL_DATA_KEY,
     [SetChannelNames.TRADE]: BotSettingKey.TRADE_CHANNEL_DATA_KEY,
     [SetChannelNames.EVENT]: BotSettingKey.EVENT_CHANNEL_DATA_KEY,
-    [SetChannelNames.DROP]: BotSettingKey.DROP_CHANNEL_DATA_KEY
+    [SetChannelNames.DROP]: BotSettingKey.DROP_CHANNEL_DATA_KEY,
+    [SetChannelNames.QUIZ]: BotSettingKey.QUIZ_CHANNEL_DATA_KEY
 };
 
 const afterSetHandles = async (commandUserId: string, type: SetChannelNames, newValue: Discord.Channel, previousValue: string | null) => {
@@ -27,8 +29,8 @@ const afterSetHandles = async (commandUserId: string, type: SetChannelNames, new
                 `Audit channel was changed from <#${previousValue}> to <#${newValue.id}>`
             ]);
         }
-    } else if (type === SetChannelNames.DROP) {
-        await CooldownNotifier.getInstance().setBotChannelId(newValue.id);
+    } else if (type === SetChannelNames.DROP || type === SetChannelNames.QUIZ) {
+        await CooldownNotifier.getInstance().setBotChannelId(channelTypeToBotSetting[type], newValue.id);
     }
 };
 
@@ -41,9 +43,10 @@ const command: CommandInterface = {
     options: [
         {
             name: 'type',
-            description: `The type of channel you want to set ${Object.values(SetChannelNames).join(', ')}`,
+            description: 'The type of channel you want to set',
             required: true,
-            type: 'STRING'
+            type: 'STRING',
+            choices: Object.values(SetChannelNames)
         },
         {
             name: 'channel',
