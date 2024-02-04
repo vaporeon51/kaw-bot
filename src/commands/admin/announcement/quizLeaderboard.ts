@@ -91,7 +91,6 @@ const command: CommandInterface = {
         try {
             console.log('data');
             const data = await getQuizWeekSummary(week, executeSQLOptions);
-            console.log(data);
             if (data === null) {
                 throw new Error('Query returned null');
             }
