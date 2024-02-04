@@ -32,10 +32,10 @@ const createLeaderboardMessageEmbed = (
         `> 🥉 <@${data.topScorers[2]?.userId}> with a rating of ${quote}${data.topScorers[2]?.value}${quote}`,
         '',
         '**Special prize winners:**',
-        `> Longest winning streak: <@${winStreakers.join('>, <@')}> stringing together ${quote}${data.longestWinStreakers[0]?.value}${quote} correct answers!`,
+        `> 📈 Longest winning streak: <@${winStreakers.join('>, <@')}> stringing together ${quote}${data.longestWinStreakers[0]?.value}${quote} correct answers!`,
         '',
         '**Hall of shame**:',
-        `> Longest losing streak: <@${lossStreakers.join('>, <@')}> for missing ${quote}${data.longestLossStreakers[0]?.value}${quote} questions in a row...`,
+        `> 📉 Longest losing streak: <@${lossStreakers.join('>, <@')}> for missing ${quote}${data.longestLossStreakers[0]?.value}${quote} questions in a row...`,
         ''
     ];
 
