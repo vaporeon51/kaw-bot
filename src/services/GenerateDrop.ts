@@ -198,6 +198,7 @@ export default class GenerateDrop {
         for (let i = 0; i < options.numberOfCards; i++) {
             const card = await this.getCardToDrop({ ...options, excludedIds: [...alreadySpawnedIds] });
             cards.push(card);
+            alreadySpawnedIds.add(card.id);
         }
         return cards;
     };
