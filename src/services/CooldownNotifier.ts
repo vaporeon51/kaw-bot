@@ -9,10 +9,19 @@ export default class CooldownNotifier {
 
     // UserId => NodeJs.Timeout
     private readonly timeoutMap: Record<string, Record<Cooldowns, NodeJS.Timeout>> = {};
-    private channelId: string | null = null;
+    private readonly cooldownToChannelType: Partial<Record<Cooldowns, BotSettingKey>> = {
+        [Cooldowns.DROP]: BotSettingKey.DROP_CHANNEL_DATA_KEY,
+        [Cooldowns.QUIZ]: BotSettingKey.QUIZ_CHANNEL_DATA_KEY
+    };
+
+    private channelId: Partial<Record<BotSettingKey, string | null>> = {
+        [BotSettingKey.DROP_CHANNEL_DATA_KEY]: null,
+        [BotSettingKey.QUIZ_CHANNEL_DATA_KEY]: null
+    };
 
     private async sendNotification (cooldown: Cooldowns, userId: string) {
         console.log(`Sending notification to: ${userId} for event ${cooldown}`);
+        const channelKey: BotSettingKey | undefined = this.cooldownToChannelType[cooldown];
         const config = Configuration.getInstance().getConfig();
         const client = ClientManager.getInstance().getClient();
         const guildDetails = await client.guilds.fetch(config.guildId);
@@ -23,11 +32,7 @@ export default class CooldownNotifier {
 
         let linesOfContent: string[] = [];
 
-        if (cooldown === Cooldowns.DROP) {
-            linesOfContent = [this.channelId ? `You have another drop available to use! Go to <#${this.channelId}>` : 'You have another drop available!'];
-        } else {
-            linesOfContent = [`You have cooldown \`${cooldown}\` now available!`];
-        }
+        linesOfContent = [channelKey ? `You have another ${cooldown.toLowerCase()} available to use! Go to <#${this.channelId[channelKey]}>` : `You have another ${cooldown.toLowerCase()} available!`];
 
         if (guildMember) {
             const dmChannel = await guildMember.createDM();
@@ -96,13 +101,15 @@ export default class CooldownNotifier {
         }
     }
 
-    public async setBotChannelId (channelId?: string) {
-        if (channelId) {
-            this.channelId = channelId;
+    public async setBotChannelId (key?: BotSettingKey, channelId?: string) {
+        if (key && channelId) {
+            this.channelId[key] = channelId;
             return;
         }
 
-        this.channelId = await getBotSetting(BotSettingKey.DROP_CHANNEL_DATA_KEY);
+        for (const key in this.channelId) {
+            this.channelId[key as BotSettingKey] = await getBotSetting(key as BotSettingKey);
+        }
     }
 
     public async init () {
