@@ -84,7 +84,7 @@ const command: CommandInterface = {
             throw new Error('Query returned null');
         }
         try {
-            console.log('data');
+            console.log(data);
 
             const usersToMention: string[] = [];
             data.topScorers.forEach(user => {
