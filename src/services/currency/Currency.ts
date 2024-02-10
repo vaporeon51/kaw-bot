@@ -6,7 +6,7 @@ import UnbelievaBoat from './UnbelievaBoat';
 export enum CurrencyResult {
     ERROR = 'ERROR',
     NOT_ENOUGH = 'NOT_ENOUGH',
-    SUCCESS = 'SUCESS'
+    SUCCESS = 'SUCCESS'
 }
 
 export abstract class ICurrencySource {
