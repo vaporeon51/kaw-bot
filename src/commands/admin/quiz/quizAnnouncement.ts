@@ -1,15 +1,12 @@
 import * as Discord from 'discord.js';
 import { type CommandInterface } from '../../../services/CommandInteractionManager';
-import { ANNOUNCEMENTS_SECTION } from './_announcement';
+import { QUIZ_SECTION } from './_quiz';
 import { getInstanceConfig } from '../../../config/config';
 import ClientManager from '../../../services/ClientManager';
 import { type QuizWeekResults, getQuizWeekSummary } from '../../../db/quiz';
 import DbConnectionHandler, { type ExecuteSQLOptions } from '../../../services/DbConnectionHandler';
-import { CurrencyManager, CurrencyResult } from '../../../services/currency/Currency';
 
 const COMMAND_NAME = 'quiz_announcement';
-const TOP_SCORER_COINS = [10000, 5000, 2500];
-const WIN_STREAK_COINS = 1000;
 
 const createLeaderboardMessageEmbed = (
     data: QuizWeekResults, week: number
@@ -53,7 +50,7 @@ const command: CommandInterface = {
     name: COMMAND_NAME,
     dmAllowed: false,
     isPublicCommand: false,
-    subCommandOf: ANNOUNCEMENTS_SECTION,
+    subCommandOf: QUIZ_SECTION,
     description: 'Post weekly quiz leaderboard announcement',
     options: [
         {
@@ -120,24 +117,6 @@ const command: CommandInterface = {
                 content: 'Error during embed creation'
             });
             return;
-        }
-        // // disperse rewards
-        for (const user of data.longestWinStreakers) {
-            const isFailure = await CurrencyManager.getInstance().deposit(user.userId, WIN_STREAK_COINS, 'Awarded for longest winning streak');
-            if (isFailure === CurrencyResult.ERROR) {
-                throw new Error('Unable to award coins');
-            }
-            console.log(isFailure);
-        }
-        for (const [index, user] of data.topScorers.entries()) {
-            if (index >= TOP_SCORER_COINS.length) {
-                throw new Error('There are more top scorers than awards specified');
-            }
-            const isFailure = await CurrencyManager.getInstance().deposit(user.userId, TOP_SCORER_COINS[index], `Awarded for top scorer position ${index + 1}`);
-            if (isFailure === CurrencyResult.ERROR) {
-                throw new Error('Unable to award coins');
-            }
-            console.log(isFailure);
         }
 
         // // deliver

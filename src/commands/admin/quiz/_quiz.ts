@@ -1,11 +1,11 @@
 import { type CommandInterface } from '../../../services/CommandInteractionManager';
 
 const commandInterface: CommandInterface = {
-    groupName: 'announcements',
+    groupName: 'quiz',
     subCommandOf: 'admin',
-    description: 'Admin tools for announcements'
+    description: 'Admin tools for quizzes'
 };
 
-export const ANNOUNCEMENTS_SECTION = 'admin announcements';
+export const QUIZ_SECTION = 'admin quiz';
 
 export default commandInterface;
