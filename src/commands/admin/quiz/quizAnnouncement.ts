@@ -76,12 +76,11 @@ const command: CommandInterface = {
         });
         const connection = await DbConnectionHandler.getInstance().getConnection();
         const executeSQLOptions: ExecuteSQLOptions = { client: connection };
-        const data = await getQuizWeekSummary(week, executeSQLOptions);
-        if (data === null) {
-            throw new Error('Query returned null');
-        }
         try {
-            console.log(data);
+            const data = await getQuizWeekSummary(week, executeSQLOptions);
+            if (data === null) {
+                throw new Error('Query returned null');
+            }
 
             const usersToMention: string[] = [];
             data.topScorers.forEach(user => {
