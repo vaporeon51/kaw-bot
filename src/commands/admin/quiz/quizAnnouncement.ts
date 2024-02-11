@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import { type CommandInterface } from '../../../services/CommandInteractionManager';
-import { ANNOUNCEMENTS_SECTION } from './_announcement';
+import { QUIZ_SECTION } from './_quiz';
 import { getInstanceConfig } from '../../../config/config';
 import ClientManager from '../../../services/ClientManager';
 import { type QuizWeekResults, getQuizWeekSummary } from '../../../db/quiz';
@@ -41,7 +41,7 @@ const createLeaderboardMessageEmbed = (
 
     embed.setDescription(lines.join('\n'));
     embed.setFooter({
-        text: 'Rewards are being dispersed.'
+        text: 'Rewards have been dispersed.'
     });
     return embed;
 };
@@ -50,7 +50,7 @@ const command: CommandInterface = {
     name: COMMAND_NAME,
     dmAllowed: false,
     isPublicCommand: false,
-    subCommandOf: ANNOUNCEMENTS_SECTION,
+    subCommandOf: QUIZ_SECTION,
     description: 'Post weekly quiz leaderboard announcement',
     options: [
         {
@@ -77,7 +77,6 @@ const command: CommandInterface = {
         const connection = await DbConnectionHandler.getInstance().getConnection();
         const executeSQLOptions: ExecuteSQLOptions = { client: connection };
         try {
-            console.log('data');
             const data = await getQuizWeekSummary(week, executeSQLOptions);
             if (data === null) {
                 throw new Error('Query returned null');
@@ -118,14 +117,12 @@ const command: CommandInterface = {
             });
             return;
         }
-        // // calc earning
 
         // // deliver
         await interaction.editReply({
             content: 'Complete'
         });
     }
-
 };
 
 export default command;
