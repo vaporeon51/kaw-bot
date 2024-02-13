@@ -65,7 +65,7 @@ export const packsForPurchase: PackDetails[] = [
         description: 'Will award one card from Series 2',
         soulboundOutput: false,
         series: Series.SERIES_2,
-        value: 15000,
+        value: 3500,
         async generatorFn () {
             return await GenerateDrop.getInstance().getCardToDrop({
                 series: Series.SERIES_2,
