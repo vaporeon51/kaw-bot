@@ -5,6 +5,7 @@ import { createGetIconFn, createGetNextRarityFn } from './utils';
 const roleSettingsDev: Record<Series, string> = {
     [Series.SERIES_1]: '1194292045410467910',
     [Series.SERIES_2]: '1194292124984807554',
+    [Series.SERIES_3]: '1213863655636992051',
     [Series.MASTER]: '',
     [Series.CHRISTMAS_2023]: ''
 };
@@ -12,6 +13,7 @@ const roleSettingsDev: Record<Series, string> = {
 const roleSettingsProd: Record<Series, string> = {
     [Series.SERIES_1]: '1178669236072230912',
     [Series.SERIES_2]: '1192089101625741494',
+    [Series.SERIES_3]: '',
     [Series.MASTER]: '',
     [Series.CHRISTMAS_2023]: ''
 };
