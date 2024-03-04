@@ -13,7 +13,7 @@ const roleSettingsDev: Record<Series, string> = {
 const roleSettingsProd: Record<Series, string> = {
     [Series.SERIES_1]: '1178669236072230912',
     [Series.SERIES_2]: '1192089101625741494',
-    [Series.SERIES_3]: '',
+    [Series.SERIES_3]: '1214005891586859091',
     [Series.MASTER]: '',
     [Series.CHRISTMAS_2023]: ''
 };
