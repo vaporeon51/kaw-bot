@@ -74,6 +74,22 @@ export const packsForPurchase: PackDetails[] = [
             });
         },
         enabled: IS_SERIES_TWO_ENABLED
+    },
+    {
+        id: 'SERIES_THREE_PACK',
+        name: 'Series 3 Pack',
+        description: 'Will award one card from Series 3',
+        soulboundOutput: false,
+        series: Series.SERIES_3,
+        value: 7000,
+        async generatorFn () {
+            return await GenerateDrop.getInstance().getCardToDrop({
+                series: Series.SERIES_3,
+                rarityRates: COMMON_PACK_RARITY_RATES,
+                onlyDroppableCards: true
+            });
+        },
+        enabled: true
     }
 ];
 
