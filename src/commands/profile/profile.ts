@@ -11,18 +11,18 @@ import { parseStringToCardsIds } from '../../common/optionParsing';
 import CardCache from '../../services/CardCache';
 
 const achievementConfigs: AchievementConfig[] = [
-    { name: 'Card Collector', icon: '<:CardCollector:1198245592183349299>', threshold: 2 },
-    { name: 'Card Disciple', icon: '<:CardDisciple:1198245699565928568>', threshold: 4 },
-    { name: 'Card Practitioner', icon: '<:CardPractitioner:1198245822228336701>', threshold: 6 },
-    { name: 'Card Master', icon: '<:CardMaster:1198246438442893422>', threshold: 8 },
-    { name: 'Card Grandmaster', icon: '<:CardGrandmaster:1198246587835633704>', threshold: 10 },
-    { name: 'Card Spirit', icon: '<:CardSpirit:1198246728911032412>', threshold: 12 },
-    { name: 'Card King', icon: '<:CardKing:1198246805419331616>', threshold: 14 },
-    { name: 'Card Emperor', icon: '<:CardEmperor:1198246978753151116>', threshold: 16 },
-    { name: 'Card Ancestor', icon: '<:CardAncestor:1198247075339587594>', threshold: 18 },
-    { name: 'Card Venerate', icon: '<:CardVenerate:1198247227768971384>', threshold: 20 },
-    { name: 'Card Saint', icon: '<:CardSaint:1198247543709110322>', threshold: 22 },
-    { name: 'Card God', icon: '<:CardGod:1198247624189431859>', threshold: 24 }
+    { name: 'Card Collector', icon: '<:CardCollector:1198245592183349299>', threshold: 4 },
+    { name: 'Card Disciple', icon: '<:CardDisciple:1198245699565928568>', threshold: 8 },
+    { name: 'Card Practitioner', icon: '<:CardPractitioner:1198245822228336701>', threshold: 12 },
+    { name: 'Card Master', icon: '<:CardMaster:1198246438442893422>', threshold: 16 },
+    { name: 'Card Grandmaster', icon: '<:CardGrandmaster:1198246587835633704>', threshold: 20 },
+    { name: 'Card Spirit', icon: '<:CardSpirit:1198246728911032412>', threshold: 24 },
+    { name: 'Card King', icon: '<:CardKing:1198246805419331616>', threshold: 28 },
+    { name: 'Card Emperor', icon: '<:CardEmperor:1198246978753151116>', threshold: 32 },
+    { name: 'Card Ancestor', icon: '<:CardAncestor:1198247075339587594>', threshold: 36 },
+    { name: 'Card Venerate', icon: '<:CardVenerate:1198247227768971384>', threshold: 40 },
+    { name: 'Card Saint', icon: '<:CardSaint:1198247543709110322>', threshold: 44 },
+    { name: 'Card God', icon: '<:CardGod:1198247624189431859>', threshold: 48 }
 ];
 
 function getAchievementText (count: number): string {
