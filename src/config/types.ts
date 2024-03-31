@@ -17,6 +17,7 @@ export enum Rarity {
 export enum Series {
     SERIES_1 = 'Series 1',
     SERIES_2 = 'Series 2',
+    SERIES_3 = 'Series 3',
     CHRISTMAS_2023 = 'Christmas 2023',
     MASTER = 'Master'
 }
