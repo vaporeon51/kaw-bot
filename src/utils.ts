@@ -55,7 +55,9 @@ const adminUsers = new Set([
     '1172605903921500232',
     '294407875655237633',
     '837357628812296262',
-    '1185373336948199576'
+    '1185373336948199576',
+    '1127807615800459304',
+    '708138557553770577'
 ]);
 export function isAdminUser(userId: string): boolean {
     return adminUsers.has(userId);
