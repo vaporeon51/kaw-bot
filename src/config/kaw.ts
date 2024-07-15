@@ -7,7 +7,8 @@ const roleSettingsDev: Record<Series, string> = {
     [Series.SERIES_2]: '1194292124984807554',
     [Series.SERIES_3]: '1213863655636992051',
     [Series.MASTER]: '',
-    [Series.CHRISTMAS_2023]: ''
+    [Series.CHRISTMAS_2023]: '',
+    [Series.SUMMER_2024]: ''
 };
 
 const roleSettingsProd: Record<Series, string> = {
@@ -15,7 +16,8 @@ const roleSettingsProd: Record<Series, string> = {
     [Series.SERIES_2]: '1192089101625741494',
     [Series.SERIES_3]: '1214005891586859091',
     [Series.MASTER]: '',
-    [Series.CHRISTMAS_2023]: ''
+    [Series.CHRISTMAS_2023]: '',
+    [Series.SUMMER_2024]: ''
 };
 
 const quizRatingEpochStartDev = 1706313600000;
@@ -41,6 +43,9 @@ const raritySettings: Record<Rarity, RaritySettings> = {
             if (series === Series.CHRISTMAS_2023) {
                 return 'https://i.imgur.com/T33wRt9.png';
             }
+            if (series === Series.SUMMER_2024) {
+                return 'https://i.imgur.com/v39z5O4.png'
+            }
             if (series === Series.MASTER) {
                 return 'https://i.imgur.com/fQdjrqx.png';
             }
@@ -49,6 +54,9 @@ const raritySettings: Record<Rarity, RaritySettings> = {
         icon (series) {
             if (series === Series.CHRISTMAS_2023) {
                 return '<:SSSChristmas:1178908018159652956>';
+            }
+            if (series === Series.SUMMER_2024) {
+                return '<:SSSSummer:1223147177438609538>'
             }
             if (series === Series.MASTER) {
                 return '<:SSSMaster:1192255718615687178>';

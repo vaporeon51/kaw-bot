@@ -98,7 +98,8 @@ export const seriesAliases: Record<Series, string[]> = {
     [Series.CHRISTMAS_2023]: ['XMAS2023'],
     [Series.SERIES_1]: ['S1'],
     [Series.SERIES_2]: ['S2'],
-    [Series.SERIES_3]: ['S3']
+    [Series.SERIES_3]: ['S3'],
+    [Series.SUMMER_2024]: ['SMMR2024']
 };
 
 export const getPrimaryAliasForSeries = (series: Series) => {
