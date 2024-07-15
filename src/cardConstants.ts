@@ -185,8 +185,8 @@ export enum Groups {
     PIXY = 'Pixy',
 }
 
-export const TIMER_ICON = '<:timer:1189496798537064448>';
-export const CHECKMARK_ICON = '<:checkmark:1189496760691859507>';
-export const SOULBOUND_ICON = '<:sb:1189496824483020810>';
-export const COIN_ICON = '<:coin:1189496543619842098>';
-export const CELEBRATE_ICON = '<:Celebrate:1189496262542766120>';
+export const TIMER_ICON = '⏲️';
+export const CHECKMARK_ICON = '<:Checkmark:1183426119567954042>';
+export const SOULBOUND_ICON = '<:sb:1183292579928866826>';
+export const COIN_ICON = '🪙';
+export const CELEBRATE_ICON = '<:Celebrate:1177831596657754163>';
