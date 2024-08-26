@@ -115,6 +115,7 @@ export const seriesAliases: Record<Series, string[]> = {
     [Series.SERIES_1]: ['S1'],
     [Series.SERIES_2]: ['S2'],
     [Series.SERIES_3]: ['S3'],
+    [Series.SERIES_4]: ['S4'],
     [Series.SUMMER_2024]: ['SMMR2024']
 };
 
