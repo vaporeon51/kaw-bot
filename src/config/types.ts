@@ -18,6 +18,7 @@ export enum Series {
     SERIES_1 = 'Series 1',
     SERIES_2 = 'Series 2',
     SERIES_3 = 'Series 3',
+    SERIES_4 = 'Series 4',
     CHRISTMAS_2023 = 'Christmas 2023',
     MASTER = 'Master',
     SUMMER_2024 = 'Summer 2024'

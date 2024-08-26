@@ -90,6 +90,7 @@ const assignOrRemoveRoles = async (userId: string, groups: string[][]) => {
     const isSeries1Collector = groups.some(group => group[1] === Series.SERIES_1);
     const isSeries2Collector = groups.some(group => group[1] === Series.SERIES_2);
     const isSeries3Collector = groups.some(group => group[1] === Series.SERIES_3);
+    const isSeries4Collector = groups.some(group => group[1] === Series.SERIES_4);
 
     const s1Role = roleConfig[Series.SERIES_1];
     [assignedRoles, removedRoles] = await handleSeriesRole(Series.SERIES_1, userId, isSeries1Collector, s1Role, assignedRoles, removedRoles);
@@ -99,6 +100,10 @@ const assignOrRemoveRoles = async (userId: string, groups: string[][]) => {
 
     const s3Role = roleConfig[Series.SERIES_3];
     [assignedRoles, removedRoles] = await handleSeriesRole(Series.SERIES_3, userId, isSeries3Collector, s3Role, assignedRoles, removedRoles);
+
+    const s4Role = roleConfig[Series.SERIES_4];
+    [assignedRoles, removedRoles] = await handleSeriesRole(Series.SERIES_4, userId, isSeries4Collector, s4Role, assignedRoles, removedRoles);
+
 
     return { assignedRoles, removedRoles };
 };
