@@ -90,22 +90,6 @@ export const packsForPurchase: PackDetails[] = [
             });
         },
         enabled: true
-    },
-    {
-        id: 'SUMMER_2024_PACK',
-        name: 'Summer 2024 Pack',
-        description: 'Will award one card from Summer 2024',
-        soulboundOutput: false,
-        series: Series.SUMMER_2024,
-        value: 170000,
-        async generatorFn () {
-            return await GenerateDrop.getInstance().getCardToDrop({
-                rarityInput: Rarity.SSS,
-                series: Series.SUMMER_2024,
-                onlyDroppableCards: false
-            });
-        },
-        enabled: true
     }
 ];
 
