@@ -49,7 +49,7 @@ export const packsForPurchase: PackDetails[] = [
         description: 'Will award one card from Series 1',
         soulboundOutput: false,
         series: Series.SERIES_1,
-        value: 3500,
+        value: 5000,
         async generatorFn () {
             return await GenerateDrop.getInstance().getCardToDrop({
                 series: Series.SERIES_1,
@@ -65,7 +65,7 @@ export const packsForPurchase: PackDetails[] = [
         description: 'Will award one card from Series 2',
         soulboundOutput: false,
         series: Series.SERIES_2,
-        value: 3500,
+        value: 5000,
         async generatorFn () {
             return await GenerateDrop.getInstance().getCardToDrop({
                 series: Series.SERIES_2,
@@ -81,10 +81,26 @@ export const packsForPurchase: PackDetails[] = [
         description: 'Will award one card from Series 3',
         soulboundOutput: false,
         series: Series.SERIES_3,
-        value: 15000,
+        value: 5000,
         async generatorFn () {
             return await GenerateDrop.getInstance().getCardToDrop({
                 series: Series.SERIES_3,
+                rarityRates: COMMON_PACK_RARITY_RATES,
+                onlyDroppableCards: true
+            });
+        },
+        enabled: true
+    },
+    {
+        id: 'SERIES_FOUR_PACK',
+        name: 'Series 4 Pack',
+        description: 'Will award one card from Series 4',
+        soulboundOutput: false,
+        series: Series.SERIES_4,
+        value: 69000,
+        async generatorFn () {
+            return await GenerateDrop.getInstance().getCardToDrop({
+                series: Series.SERIES_4,
                 rarityRates: COMMON_PACK_RARITY_RATES,
                 onlyDroppableCards: true
             });
