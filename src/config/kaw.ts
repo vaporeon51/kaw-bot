@@ -9,7 +9,8 @@ const roleSettingsDev: Record<Series, string> = {
     [Series.SERIES_4]: '',
     [Series.MASTER]: '',
     [Series.CHRISTMAS_2023]: '',
-    [Series.SUMMER_2024]: ''
+    [Series.SUMMER_2024]: '',
+    [Series.HALLOWEEN_2024]: ''
 };
 
 const roleSettingsProd: Record<Series, string> = {
@@ -19,7 +20,8 @@ const roleSettingsProd: Record<Series, string> = {
     [Series.SERIES_4]: '1222938475750228169',
     [Series.MASTER]: '',
     [Series.CHRISTMAS_2023]: '',
-    [Series.SUMMER_2024]: ''
+    [Series.SUMMER_2024]: '',
+    [Series.HALLOWEEN_2024]: ''
 };
 
 const quizRatingEpochStartDev = 1706313600000;
@@ -46,7 +48,10 @@ const raritySettings: Record<Rarity, RaritySettings> = {
                 return 'https://i.imgur.com/T33wRt9.png';
             }
             if (series === Series.SUMMER_2024) {
-                return 'https://i.imgur.com/v39z5O4.png'
+                return 'https://i.imgur.com/v39z5O4.png';
+            }
+            if (series === Series.HALLOWEEN_2024) {
+                return 'https://imgur.com/h0tGXu8.png';
             }
             if (series === Series.MASTER) {
                 return 'https://i.imgur.com/fQdjrqx.png';
@@ -59,6 +64,9 @@ const raritySettings: Record<Rarity, RaritySettings> = {
             }
             if (series === Series.SUMMER_2024) {
                 return '<:SSSSummer:1223147177438609538>'
+            }
+            if (series === Series.HALLOWEEN_2024) {
+                return '<:SSSHalloween:1223262526981275658>'
             }
             if (series === Series.MASTER) {
                 return '<:SSSMaster:1192255718615687178>';
