@@ -21,7 +21,8 @@ export enum Series {
     SERIES_4 = 'Series 4',
     CHRISTMAS_2023 = 'Christmas 2023',
     MASTER = 'Master',
-    SUMMER_2024 = 'Summer 2024'
+    SUMMER_2024 = 'Summer 2024',
+    HALLOWEEN_2024 = 'Halloween 2024'
 }
 
 export interface RarityRange {
