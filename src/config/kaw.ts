@@ -68,9 +68,6 @@ const raritySettings: Record<Rarity, RaritySettings> = {
             if (series === Series.HALLOWEEN_2024) {
                 return '<:z10Halloween:1291975782947622963>'
             }
-            if (series === Series.HALLOWEEN_2024) {
-                return '<:SSSHalloween:1223262526981275658>'
-            }
             if (series === Series.MASTER) {
                 return '<:z07SSSMaster:1291975775884414976>';
             }
