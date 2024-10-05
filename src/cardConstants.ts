@@ -5,7 +5,7 @@ import { type InventoryResult } from './db/users';
 import { IS_SERIES_TWO_ENABLED } from './services/FeatureFlags';
 import GenerateDrop from './services/GenerateDrop';
 
-export const JJ_DISCORD_ID = '1185373336948199576';
+export const JJ_DISCORD_ID = '1127807615800459304';
 export const ONE_MINUTE_MS = 60000;
 export const ONE_HOUR_MS = ONE_MINUTE_MS * 60;
 
@@ -204,7 +204,7 @@ export enum Groups {
 }
 
 export const TIMER_ICON = '⏲️';
-export const CHECKMARK_ICON = '<:Checkmark:1183426119567954042>';
-export const SOULBOUND_ICON = '<:sb:1183292579928866826>';
+export const CHECKMARK_ICON = '<:white_check_mark:>';
+export const SOULBOUND_ICON = '<:SoulBound:1291975469977305098>';
 export const COIN_ICON = '🪙';
-export const CELEBRATE_ICON = '<:Celebrate:1177831596657754163>';
+export const CELEBRATE_ICON = '<:tada:>';
