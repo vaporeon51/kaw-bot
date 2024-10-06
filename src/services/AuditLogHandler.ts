@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import { BotSettingKey, getBotSetting } from '../db/botSettings';
 import ClientManager from './ClientManager';
 
-const JJ_USER_ID = '1185373336948199576';
+const JJ_USER_ID = '1127807615800459304';
 export const JJ_AUDIT_CONTACT_LINE = `<@${JJ_USER_ID}> please check logs`;
 
 export default class AuditLogHandler {

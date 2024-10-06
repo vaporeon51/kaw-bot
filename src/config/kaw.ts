@@ -3,9 +3,9 @@ import { CurrencyType, type RaritySettings, type InstanceConfig, Rarity, Series 
 import { createGetIconFn, createGetNextRarityFn } from './utils';
 
 const roleSettingsDev: Record<Series, string> = {
-    [Series.SERIES_1]: '1194292045410467910',
-    [Series.SERIES_2]: '1194292124984807554',
-    [Series.SERIES_3]: '1213863655636992051',
+    [Series.SERIES_1]: '11291966055752667159',
+    [Series.SERIES_2]: '1291966055752667158',
+    [Series.SERIES_3]: '1291966055752667157',
     [Series.SERIES_4]: '',
     [Series.MASTER]: '',
     [Series.CHRISTMAS_2023]: '',
@@ -14,10 +14,10 @@ const roleSettingsDev: Record<Series, string> = {
 };
 
 const roleSettingsProd: Record<Series, string> = {
-    [Series.SERIES_1]: '1178669236072230912',
-    [Series.SERIES_2]: '1192089101625741494',
-    [Series.SERIES_3]: '1214005891586859091',
-    [Series.SERIES_4]: '1222938475750228169',
+    [Series.SERIES_1]: '1291712535610785843',
+    [Series.SERIES_2]: '1291712528510095390',
+    [Series.SERIES_3]: '1291712532385501224',
+    [Series.SERIES_4]: '1291712535610785843',
     [Series.MASTER]: '',
     [Series.CHRISTMAS_2023]: '',
     [Series.SUMMER_2024]: '',
@@ -27,14 +27,14 @@ const roleSettingsProd: Record<Series, string> = {
 const quizRatingEpochStartDev = 1706313600000;
 const quizRatingEpochStartProd = 1706457600000;
 
-const BOT_ANNOUCEMENT_CHANNEL_DEV = '1194324127645970462';
-const BOT_ANNOUCEMENT_CHANNEL_PROD = '1194318699159617596';
+const BOT_ANNOUCEMENT_CHANNEL_DEV = '1291966056340000802';
+const BOT_ANNOUCEMENT_CHANNEL_PROD = '1291612688966881321';
 
 const raritySettings: Record<Rarity, RaritySettings> = {
     [Rarity.GOD]: {
         index: 0,
         iconImage: 'https://i.imgur.com/PsgbH27.png',
-        icon: '<:GodRating:1185720175178289295>',
+        icon: '<:z08GOD:1291975773804171284>',
         rarity: Rarity.GOD,
         rate: 1,
         color: '#d04427',
@@ -60,18 +60,18 @@ const raritySettings: Record<Rarity, RaritySettings> = {
         },
         icon (series) {
             if (series === Series.CHRISTMAS_2023) {
-                return '<:SSSChristmas:1178908018159652956>';
+                return '<:z11Christmas:1291975778249998376>';
             }
             if (series === Series.SUMMER_2024) {
-                return '<:SSSSummer:1223147177438609538>'
+                return '<:z11Summer:1291975780406005760>'
             }
             if (series === Series.HALLOWEEN_2024) {
-                return '<:SSSHalloween:1223262526981275658>'
+                return '<:z10Halloween:1291975782947622963>'
             }
             if (series === Series.MASTER) {
-                return '<:SSSMaster:1192255718615687178>';
+                return '<:z07SSSMaster:1291975775884414976>';
             }
-            return '<:SSSrating:1177787651055689818>';
+            return '<:z06SSS:1291975750089445487>';
         },
         color (series) {
             if (series === Series.MASTER) {
@@ -87,7 +87,7 @@ const raritySettings: Record<Rarity, RaritySettings> = {
     [Rarity.SS]: {
         index: 2,
         iconImage: 'https://i.imgur.com/JAoMQNi.png',
-        icon: '<:SSrating:1177788559290282076>',
+        icon: '<:z05SS:1291975771237257300>',
         rarity: Rarity.SS,
         color: '#ffeb00',
         burnValue: 50_000,
@@ -98,7 +98,7 @@ const raritySettings: Record<Rarity, RaritySettings> = {
     [Rarity.S]: {
         index: 3,
         iconImage: 'https://i.imgur.com/ExolcGc.png',
-        icon: '<:Srating:1177788268037799956>',
+        icon: '<:z04S:1291975768896831508>',
         rarity: Rarity.S,
         color: '#ff9900',
         burnValue: 16_500,
@@ -109,7 +109,7 @@ const raritySettings: Record<Rarity, RaritySettings> = {
     [Rarity.A]: {
         index: 4,
         iconImage: 'https://i.imgur.com/yiJAaFQ.png',
-        icon: '<:Arating:1177788779298295880>',
+        icon: '<:z03A:1291975765977731132>',
         rarity: Rarity.A,
         color: '#8e7cc3',
         burnValue: 5_500,
@@ -119,7 +119,7 @@ const raritySettings: Record<Rarity, RaritySettings> = {
     [Rarity.B]: {
         index: 5,
         iconImage: 'https://i.imgur.com/WaRYp3V.png',
-        icon: '<:Brating:1177789430103277619>',
+        icon: '<:z02B:1291975763221811290>',
         rarity: Rarity.B,
         color: '#a4c2f4',
         burnValue: 1800,
@@ -128,7 +128,7 @@ const raritySettings: Record<Rarity, RaritySettings> = {
     [Rarity.C]: {
         index: 6,
         iconImage: 'https://i.imgur.com/EGdDJ2J.png',
-        icon: '<:Crating:1177789626795184178>',
+        icon: '<:z01C:1291975760164421672>',
         rarity: Rarity.C,
         color: '#b6d7a8',
         burnValue: 600,
@@ -137,7 +137,7 @@ const raritySettings: Record<Rarity, RaritySettings> = {
     [Rarity.D]: {
         index: 7,
         iconImage: 'https://i.imgur.com/lbKOTvJ.png',
-        icon: '<:Drating:1177790000788672572>',
+        icon: '<:z00D:1291975757459099648>',
         rarity: Rarity.D,
         rate: 0,
         color: '#efefef',
