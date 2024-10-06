@@ -34,7 +34,7 @@ const raritySettings: Record<Rarity, RaritySettings> = {
     [Rarity.GOD]: {
         index: 0,
         iconImage: 'https://i.imgur.com/PsgbH27.png',
-        icon: '<:z08GOD:1291975773804171284',
+        icon: '<:z08GOD:1291975773804171284>',
         rarity: Rarity.GOD,
         rate: 1,
         color: '#d04427',
@@ -71,7 +71,7 @@ const raritySettings: Record<Rarity, RaritySettings> = {
             if (series === Series.MASTER) {
                 return '<:z07SSSMaster:1291975775884414976>';
             }
-            return '<::1291975750089445487>';
+            return '<:z06SSS:1291975750089445487>';
         },
         color (series) {
             if (series === Series.MASTER) {
