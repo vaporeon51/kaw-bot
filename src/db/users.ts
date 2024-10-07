@@ -29,6 +29,21 @@ const mapRowToProgressForSeries = (row: any): ProgressForSeries => {
     };
     return value;
 };
+
+export const getAllUserIds = async (): Promise<string[] | null> => {
+    const sql = `SELECT DISTINCT id
+            FROM users`;
+
+    const result = await DbConnectionHandler.getInstance().executeSQL(sql)
+
+    if (result.rowCount === 0) {
+        return null;
+    }
+    return result.rows.map((row: any) => {
+        return row.id
+    })
+}
+
 export const getProgressTowardsAllGroupsInSeries = async (userId: string, series: string, options?: ExecuteSQLOptions): Promise<ProgressForSeries[] | null> => {
     const sql = `WITH TotalCountsForSeries AS (
             SELECT series, group_name, COUNT(*) FROM cards
