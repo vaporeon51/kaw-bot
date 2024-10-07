@@ -3,7 +3,6 @@ import DbConnectionHandler, { type ExecuteSQLOptions } from '../services/DbConne
 import Configuration from '../services/Configuration';
 import { Rarity, type Series } from '../config/types';
 import { getCurrentQuizWeek } from '../db/quiz';
-import { isNullishCoalesce } from 'typescript';
 export interface InventoryResult {
     count: number
     cardId: number
