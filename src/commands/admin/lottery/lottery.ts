@@ -69,7 +69,7 @@ interface LotteryPayload {
     lotteryEmbed?: Discord.Message
     lotteryImageMsg?: Discord.Message
     interval?: NodeJS.Timer
-    selectedNumber: number
+    selectedNumbers: Set<number>
     terminationId?: string
 };
 
@@ -103,22 +103,33 @@ export class LotteryManager {
             return;
         }
 
-        const { lotteryGuesses, channel, cardDetails } = this.lotteryData;
+        const { lotteryGuesses, channel, cardDetails, selectedNumbers } = this.lotteryData;
 
-        this.lotteryData.selectedNumber = GenerateDrop.getInstance().generateNumberInRange(1, 100);
-        const selectedNumber = this.lotteryData.selectedNumber
-        console.log(`Lottery selected number: ${selectedNumber}`);
+        while (selectedNumbers.size != 3) {
+            selectedNumbers.add(GenerateDrop.getInstance().generateNumberInRange(1, 100))
+        }
 
-        if (!lotteryGuesses[selectedNumber]) {
+        console.log(`Lottery selected numbers: ${[...selectedNumbers]}`);
+
+        const winningUsersSet = new Set<string>()
+        for (const num of selectedNumbers) {
+            if (lotteryGuesses[num]) {
+                for (const user of lotteryGuesses[num]) {
+                    winningUsersSet.add(user)
+                }
+            }
+        }
+
+        if (winningUsersSet.size === 0) {
             await channel.send({
-                content: `Everyone took the L the number was ${selectedNumber}`
+                content: `No one guessed any of ${[...selectedNumbers].sort((a, b) => a - b)}. Therefore there's no Winner for this Lottery. We'll see you again.`
             })
         } else {
-            const winningUsers = Array.from(lotteryGuesses[selectedNumber])
+            const winningUsers = Array.from(winningUsersSet)
             const mentionWinners = winningUsers.map((id) => `<@${id}>`)
             
             const descriptionLines = [
-                `**Winners - ${mentionWinners.join(', ')}** with guess \`${selectedNumber}\``,
+                `**Winners - ${mentionWinners.join(', ')}** the numbers were \`${[...selectedNumbers].sort((a, b) => a - b)}\``,
                 `${CELEBRATE_ICON} **Congratulations** ${CELEBRATE_ICON}!`,
                 'Lottery event has now ended!'
             ];
@@ -152,14 +163,14 @@ export class LotteryManager {
         const { lotteryUserIds, lotteryGuesses, entryCost } = this.lotteryData;
 
         if (lotteryUserIds.has(user.id) || guesses.length != 3) {
-            throw new Error("You already have joined this lottery!")
+            throw new String("You already have joined this lottery!")
         }
 
         const result = await CurrencyManager.getInstance().deduct(user.id, entryCost, 'Lottery');
 
         // Check if user has balance
         if (result === CurrencyResult.NOT_ENOUGH) {
-            throw new Error(`Not enough balance to enter the lottery (amount required: ${entryCost})`)
+            throw new String(`Not enough balance to enter the lottery (amount required: ${entryCost})`)
         } else if (CurrencyResult.SUCCESS) {
             lotteryUserIds.add(user.id);
             guesses.forEach((num) => {
@@ -169,7 +180,6 @@ export class LotteryManager {
                 lotteryGuesses[num].add(user.id)
             })
             console.log(`User: ${user.id} entered lotto with ${guesses}`)
-            await this.updateEmbed();
         } else {
             console.error(`Issue deducting money from user for lottery: ${user.id} ${result}`);
             throw new Error('Issue joining lottery, please try again later')
@@ -185,7 +195,12 @@ export class LotteryManager {
         const { endTime, lotteryUserIds } = this.lotteryData;
         const timeRemaining = this.getTimeRemaining(endTime);
 
-        if (timeRemaining === 0) {
+        if (timeRemaining === 0 && this.isLotteryActive) {
+            this.isLotteryActive = false
+            if (this.lotteryData.interval) {
+                clearInterval(this.lotteryData.interval);
+                this.lotteryData.interval = undefined
+            }
             if (lotteryUserIds.size === 0) {
                 await this.endLottery();
             } else {
@@ -201,6 +216,10 @@ export class LotteryManager {
         }
 
         const { channel, cardDetails, lotteryUserIds, endTime, entryCost, roleMention } = this.lotteryData;
+        const temp = await channel.send({
+            content: `<@&${roleMention}>`
+        })
+        await temp.delete()
         const lotteryEmbed = await channel.send(createLotteryEmbed(cardDetails, entryCost, lotteryUserIds, this.getTimeRemaining(endTime), roleMention));
         this.lotteryData.lotteryEmbed = lotteryEmbed;
 
@@ -226,6 +245,10 @@ export class LotteryManager {
     };
 
     public async startLottery (lotteryData: LotteryPayload): Promise<void> {
+        if (this.isLotteryActive) {
+            return
+        }
+
         this.lotteryData = lotteryData;
         this.isLotteryActive = true;
         await this.sendJoinMessageToChannel();
@@ -358,6 +381,7 @@ const command: CommandInterface = {
 
         const lotteryUserIds = new Set<string>();
         const lotteryGuesses: Record<number, Set<string>> = {};
+        const selectedNumbers = new Set<number>();
         const channel = interaction.channel;
 
         if (!channel || !channel?.isTextBased() || interaction.channel.isDMBased()) {
@@ -377,7 +401,7 @@ const command: CommandInterface = {
             endTime,
             entryCost,
             roleMention,
-            selectedNumber: 0,
+            selectedNumbers,
         };
         await LotteryManager.getInstance().startLottery(lotteryPayload);
     }
