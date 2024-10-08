@@ -129,7 +129,7 @@ export class LotteryManager {
             const mentionWinners = winningUsers.map((id) => `<@${id}>`)
             
             const descriptionLines = [
-                `**Winners - ${mentionWinners.join(', ')}** the numbers were \`${[...selectedNumbers].sort()}\``,
+                `**Winners - ${mentionWinners.join(', ')}** the numbers were \`${[...selectedNumbers].sort((a, b) => a - b)}\``,
                 `${CELEBRATE_ICON} **Congratulations** ${CELEBRATE_ICON}!`,
                 'Lottery event has now ended!'
             ];
