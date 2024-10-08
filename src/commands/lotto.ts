@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import { type CommandInterface } from '../services/CommandInteractionManager';
 import { LotteryManager } from './admin/lottery/lottery'
-import { string } from 'pg-escape';
 
 const command: CommandInterface = {
     name: 'lotto',

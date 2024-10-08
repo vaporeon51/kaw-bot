@@ -163,14 +163,14 @@ export class LotteryManager {
         const { lotteryUserIds, lotteryGuesses, entryCost } = this.lotteryData;
 
         if (lotteryUserIds.has(user.id) || guesses.length != 3) {
-            throw new Error("You already have joined this lottery!")
+            throw new String("You already have joined this lottery!")
         }
 
         const result = await CurrencyManager.getInstance().deduct(user.id, entryCost, 'Lottery');
 
         // Check if user has balance
         if (result === CurrencyResult.NOT_ENOUGH) {
-            throw new Error(`Not enough balance to enter the lottery (amount required: ${entryCost})`)
+            throw new String(`Not enough balance to enter the lottery (amount required: ${entryCost})`)
         } else if (CurrencyResult.SUCCESS) {
             lotteryUserIds.add(user.id);
             guesses.forEach((num) => {
@@ -180,7 +180,6 @@ export class LotteryManager {
                 lotteryGuesses[num].add(user.id)
             })
             console.log(`User: ${user.id} entered lotto with ${guesses}`)
-            await this.updateEmbed();
         } else {
             console.error(`Issue deducting money from user for lottery: ${user.id} ${result}`);
             throw new Error('Issue joining lottery, please try again later')
@@ -196,16 +195,16 @@ export class LotteryManager {
         const { endTime, lotteryUserIds } = this.lotteryData;
         const timeRemaining = this.getTimeRemaining(endTime);
 
-        if (timeRemaining === 0) {
+        if (timeRemaining === 0 && this.isLotteryActive) {
             this.isLotteryActive = false
+            if (this.lotteryData.interval) {
+                clearInterval(this.lotteryData.interval);
+                this.lotteryData.interval = undefined
+            }
             if (lotteryUserIds.size === 0) {
                 await this.endLottery();
             } else {
                 // Begin lottery
-                if (this.lotteryData.interval) {
-                    clearInterval(this.lotteryData.interval);
-                    this.lotteryData.interval = undefined
-                }
                 await this.onLotteryBegin();
             }
         }
@@ -217,6 +216,10 @@ export class LotteryManager {
         }
 
         const { channel, cardDetails, lotteryUserIds, endTime, entryCost, roleMention } = this.lotteryData;
+        const temp = await channel.send({
+            content: `<@&${roleMention}>`
+        })
+        await temp.delete()
         const lotteryEmbed = await channel.send(createLotteryEmbed(cardDetails, entryCost, lotteryUserIds, this.getTimeRemaining(endTime), roleMention));
         this.lotteryData.lotteryEmbed = lotteryEmbed;
 
@@ -242,7 +245,7 @@ export class LotteryManager {
     };
 
     public async startLottery (lotteryData: LotteryPayload): Promise<void> {
-        if (this.isLotteryActive === true) {
+        if (this.isLotteryActive) {
             return
         }
 
