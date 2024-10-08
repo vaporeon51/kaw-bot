@@ -69,7 +69,7 @@ interface LotteryPayload {
     lotteryEmbed?: Discord.Message
     lotteryImageMsg?: Discord.Message
     interval?: NodeJS.Timer
-    selectedNumber: number
+    selectedNumbers: Set<number>
     terminationId?: string
 };
 
@@ -103,22 +103,33 @@ export class LotteryManager {
             return;
         }
 
-        const { lotteryGuesses, channel, cardDetails } = this.lotteryData;
+        const { lotteryGuesses, channel, cardDetails, selectedNumbers } = this.lotteryData;
 
-        this.lotteryData.selectedNumber = GenerateDrop.getInstance().generateNumberInRange(1, 100);
-        const selectedNumber = this.lotteryData.selectedNumber
-        console.log(`Lottery selected number: ${selectedNumber}`);
+        while (selectedNumbers.size != 3) {
+            selectedNumbers.add(GenerateDrop.getInstance().generateNumberInRange(1, 100))
+        }
 
-        if (!lotteryGuesses[selectedNumber]) {
+        console.log(`Lottery selected numbers: ${[...selectedNumbers]}`);
+
+        const winningUsersSet = new Set<string>()
+        for (const num of selectedNumbers) {
+            if (lotteryGuesses[num]) {
+                for (const user of lotteryGuesses[num]) {
+                    winningUsersSet.add(user)
+                }
+            }
+        }
+
+        if (winningUsersSet.size === 0) {
             await channel.send({
-                content: `Everyone took the L the number was ${selectedNumber}`
+                content: `No one guessed any of ${[...selectedNumbers].sort((a, b) => a - b)}. Therefore there's no Winner for this Lottery. We'll see you again.`
             })
         } else {
-            const winningUsers = Array.from(lotteryGuesses[selectedNumber])
+            const winningUsers = Array.from(winningUsersSet)
             const mentionWinners = winningUsers.map((id) => `<@${id}>`)
             
             const descriptionLines = [
-                `**Winners - ${mentionWinners.join(', ')}** with guess \`${selectedNumber}\``,
+                `**Winners - ${mentionWinners.join(', ')}** the numbers were \`${[...selectedNumbers].sort()}\``,
                 `${CELEBRATE_ICON} **Congratulations** ${CELEBRATE_ICON}!`,
                 'Lottery event has now ended!'
             ];
@@ -186,10 +197,15 @@ export class LotteryManager {
         const timeRemaining = this.getTimeRemaining(endTime);
 
         if (timeRemaining === 0) {
+            this.isLotteryActive = false
             if (lotteryUserIds.size === 0) {
                 await this.endLottery();
             } else {
                 // Begin lottery
+                if (this.lotteryData.interval) {
+                    clearInterval(this.lotteryData.interval);
+                    this.lotteryData.interval = undefined
+                }
                 await this.onLotteryBegin();
             }
         }
@@ -226,6 +242,10 @@ export class LotteryManager {
     };
 
     public async startLottery (lotteryData: LotteryPayload): Promise<void> {
+        if (this.isLotteryActive === true) {
+            return
+        }
+
         this.lotteryData = lotteryData;
         this.isLotteryActive = true;
         await this.sendJoinMessageToChannel();
@@ -358,6 +378,7 @@ const command: CommandInterface = {
 
         const lotteryUserIds = new Set<string>();
         const lotteryGuesses: Record<number, Set<string>> = {};
+        const selectedNumbers = new Set<number>();
         const channel = interaction.channel;
 
         if (!channel || !channel?.isTextBased() || interaction.channel.isDMBased()) {
@@ -377,7 +398,7 @@ const command: CommandInterface = {
             endTime,
             entryCost,
             roleMention,
-            selectedNumber: 0,
+            selectedNumbers,
         };
         await LotteryManager.getInstance().startLottery(lotteryPayload);
     }
