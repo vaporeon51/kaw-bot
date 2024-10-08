@@ -11,7 +11,7 @@ const command: CommandInterface = {
     subCommandOf: EVENT_SECTION,
     description: 'Stops active lottery draw if one exists',
     execute: async (interaction: Discord.ChatInputCommandInteraction) => {
-        await LotteryManager.getInstance().endLottery('Lottery stopped by admin');
+        await LotteryManager.getInstance().endLottery();
         await interaction.reply({
             content: 'If lottery was active it has been stopped (may need 10 seconds to update)',
             ephemeral: true
