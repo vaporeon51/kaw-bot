@@ -50,7 +50,7 @@ export const packsForPurchase: PackDetails[] = [
         soulboundOutput: false,
         series: Series.SERIES_1,
         value: 5000,
-        async generatorFn () {
+        async generatorFn() {
             return await GenerateDrop.getInstance().getCardToDrop({
                 series: Series.SERIES_1,
                 rarityRates: COMMON_PACK_RARITY_RATES,
@@ -66,7 +66,7 @@ export const packsForPurchase: PackDetails[] = [
         soulboundOutput: false,
         series: Series.SERIES_2,
         value: 5000,
-        async generatorFn () {
+        async generatorFn() {
             return await GenerateDrop.getInstance().getCardToDrop({
                 series: Series.SERIES_2,
                 rarityRates: COMMON_PACK_RARITY_RATES,
@@ -82,7 +82,7 @@ export const packsForPurchase: PackDetails[] = [
         soulboundOutput: false,
         series: Series.SERIES_3,
         value: 5000,
-        async generatorFn () {
+        async generatorFn() {
             return await GenerateDrop.getInstance().getCardToDrop({
                 series: Series.SERIES_3,
                 rarityRates: COMMON_PACK_RARITY_RATES,
@@ -98,11 +98,27 @@ export const packsForPurchase: PackDetails[] = [
         soulboundOutput: false,
         series: Series.SERIES_4,
         value: 69000,
-        async generatorFn () {
+        async generatorFn() {
             return await GenerateDrop.getInstance().getCardToDrop({
                 series: Series.SERIES_4,
                 rarityRates: COMMON_PACK_RARITY_RATES,
                 onlyDroppableCards: true
+            });
+        },
+        enabled: true
+    },
+    {
+        id: 'HALLOWEEN_2024_PACK',
+        name: 'Halloween 2024 Pack',
+        description: 'Will award one card from Halloween 2024',
+        soulboundOutput: false,
+        series: Series.HALLOWEEN_2024,
+        value: 169000,
+        async generatorFn() {
+            return await GenerateDrop.getInstance().getCardToDrop({
+                rarityInput: Rarity.SSS,
+                series: Series.HALLOWEEN_2024,
+                onlyDroppableCards: false
             });
         },
         enabled: true
