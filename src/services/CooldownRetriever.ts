@@ -31,7 +31,7 @@ const cooldownToSettings: Record<Cooldowns, CooldownSettings> = {
     },
     [Cooldowns.OPEN_PACK]: {
         userField: 'lastPackOpened',
-        defaultCooldown: ONE_HOUR_MS * 12,
+        defaultCooldown: ONE_HOUR_MS * 24,
         displayPrefix: 'Open pack'
     },
     [Cooldowns.QUIZ]: {
@@ -50,14 +50,14 @@ export interface CooldownInfoOutput {
 export default class CooldownRetriever {
     public static instance: CooldownRetriever;
 
-    private hasCooldownElapsed (msSinceLastCard: number | null | undefined, cooldown: number): boolean {
+    private hasCooldownElapsed(msSinceLastCard: number | null | undefined, cooldown: number): boolean {
         if (msSinceLastCard === null || msSinceLastCard === undefined) {
             return true;
         }
         return msSinceLastCard >= cooldown;
     };
 
-    private async handleDropCooldown (user: UserData, lastCardReceived: number | undefined): Promise<CooldownInfoOutput> {
+    private async handleDropCooldown(user: UserData, lastCardReceived: number | undefined): Promise<CooldownInfoOutput> {
         const msSinceLastCard = !lastCardReceived ? null : Date.now() - lastCardReceived;
         const roleCache = PermissionsCache.getInstance();
         const cooldownMs = await roleCache.getCooldownMsBasedOnRole(user.id);
@@ -72,7 +72,7 @@ export default class CooldownRetriever {
         };
     }
 
-    private calculateCooldownInfo (lastTimeActionPerformed: number | undefined, cooldownAmount: number): CooldownInfoOutput {
+    private calculateCooldownInfo(lastTimeActionPerformed: number | undefined, cooldownAmount: number): CooldownInfoOutput {
         const timeSinceActionHappened = Date.now() - (lastTimeActionPerformed ?? 0);
         const timeLeft = cooldownAmount - timeSinceActionHappened;
         const elapsed = lastTimeActionPerformed === undefined ? true : timeSinceActionHappened > cooldownAmount;
@@ -83,7 +83,7 @@ export default class CooldownRetriever {
         };
     };
 
-    private async calculateCooldownInfoBasedOnCooldown (userData: UserData, cooldown: Cooldowns, lastTimeActionPerformed: number | undefined) {
+    private async calculateCooldownInfoBasedOnCooldown(userData: UserData, cooldown: Cooldowns, lastTimeActionPerformed: number | undefined) {
         const cooldownSettings = cooldownToSettings[cooldown];
         if (cooldown === Cooldowns.DROP) {
             return await this.handleDropCooldown(userData, lastTimeActionPerformed);
@@ -92,11 +92,11 @@ export default class CooldownRetriever {
         }
     }
 
-    public static renderTime (epoch: number) {
+    public static renderTime(epoch: number) {
         return `<t:${epoch}:F>`;
     };
 
-    public static getDisplayStringFromInfo (cooldown: Cooldowns, cooldownInfo: CooldownInfoOutput, includePrefix = true): string {
+    public static getDisplayStringFromInfo(cooldown: Cooldowns, cooldownInfo: CooldownInfoOutput, includePrefix = true): string {
         const cooldownSettings = cooldownToSettings[cooldown];
         const prefix = includePrefix ? `${cooldownSettings.displayPrefix} ` : '';
         if (!cooldownInfo.elapsed) {
@@ -106,7 +106,7 @@ export default class CooldownRetriever {
         }
     }
 
-    public static getShortDisplayFromInfo (cooldownInfo: CooldownInfoOutput): string {
+    public static getShortDisplayFromInfo(cooldownInfo: CooldownInfoOutput): string {
         if (!cooldownInfo.elapsed) {
             return `${CooldownRetriever.renderTime(cooldownInfo.availableAtEpoch)} ${TIMER_ICON}`;
         } else {
@@ -114,7 +114,7 @@ export default class CooldownRetriever {
         }
     }
 
-    public async getAllCooldownsForUser (userId: string): Promise<Record<Cooldowns, CooldownInfoOutput>> {
+    public async getAllCooldownsForUser(userId: string): Promise<Record<Cooldowns, CooldownInfoOutput>> {
         const userData = await getUserData(userId);
         if (userData === null) {
             throw Error('Unable to retrieve user data');
@@ -130,7 +130,7 @@ export default class CooldownRetriever {
         return resultObj;
     }
 
-    public async getCooldownInfo (userId: string, cooldown: Cooldowns) {
+    public async getCooldownInfo(userId: string, cooldown: Cooldowns) {
         const userData = await getUserData(userId);
         if (userData === null) {
             throw Error('Unable to retrieve user data');
@@ -141,7 +141,7 @@ export default class CooldownRetriever {
         return await this.calculateCooldownInfoBasedOnCooldown(userData, cooldown, lastTimeActionHappened);
     }
 
-    public static getInstance (): CooldownRetriever {
+    public static getInstance(): CooldownRetriever {
         if (!CooldownRetriever.instance) {
             CooldownRetriever.instance = new CooldownRetriever();
         }
