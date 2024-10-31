@@ -106,22 +106,6 @@ export const packsForPurchase: PackDetails[] = [
             });
         },
         enabled: true
-    },
-    {
-        id: 'HALLOWEEN_2024_PACK',
-        name: 'Halloween 2024 Pack',
-        description: 'Will award one card from Halloween 2024',
-        soulboundOutput: false,
-        series: Series.HALLOWEEN_2024,
-        value: 169000,
-        async generatorFn() {
-            return await GenerateDrop.getInstance().getCardToDrop({
-                rarityInput: Rarity.SSS,
-                series: Series.HALLOWEEN_2024,
-                onlyDroppableCards: false
-            });
-        },
-        enabled: true
     }
 ];
 
