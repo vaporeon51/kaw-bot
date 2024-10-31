@@ -31,7 +31,7 @@ const cooldownToSettings: Record<Cooldowns, CooldownSettings> = {
     },
     [Cooldowns.OPEN_PACK]: {
         userField: 'lastPackOpened',
-        defaultCooldown: ONE_HOUR_MS * 24,
+        defaultCooldown: ONE_HOUR_MS * 12,
         displayPrefix: 'Open pack'
     },
     [Cooldowns.QUIZ]: {
