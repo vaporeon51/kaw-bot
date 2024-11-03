@@ -85,6 +85,12 @@ const checkCraftContents = async (cards: InventoryResult[]): Promise<CardCheckRe
         };
     }
 
+    if (cards.length === UPGRADE_CRAFT_NUM_OF_CARDS && firstRarity === Rarity.DEPTH) {
+        return {
+            errorReason: 'Upgrade crafting cannot be performed on Admin cards'
+        };
+    }
+
     const otherCards = await doesOtherCardsExistInSeriesForRarity(firstSeries, firstRarity, Array.from(new Set(cards.map(card => card.cardId))));
     if (!otherCards) {
         return {

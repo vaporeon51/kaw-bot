@@ -10,7 +10,8 @@ const roleSettingsDev: Record<Series, string> = {
     [Series.MASTER]: '',
     [Series.CHRISTMAS_2023]: '',
     [Series.SUMMER_2024]: '',
-    [Series.HALLOWEEN_2024]: ''
+    [Series.HALLOWEEN_2024]: '',
+    [Series.ADMIN]: ''
 };
 
 const roleSettingsProd: Record<Series, string> = {
@@ -21,7 +22,8 @@ const roleSettingsProd: Record<Series, string> = {
     [Series.MASTER]: '',
     [Series.CHRISTMAS_2023]: '',
     [Series.SUMMER_2024]: '',
-    [Series.HALLOWEEN_2024]: ''
+    [Series.HALLOWEEN_2024]: '',
+    [Series.ADMIN]: ''
 };
 
 const quizRatingEpochStartDev = 1706313600000;
@@ -31,6 +33,15 @@ const BOT_ANNOUCEMENT_CHANNEL_DEV = '1291966056340000802';
 const BOT_ANNOUCEMENT_CHANNEL_PROD = '1291612688966881321';
 
 const raritySettings: Record<Rarity, RaritySettings> = {
+    [Rarity.DEPTH]: {
+        index: -10,
+        rarity: Rarity.DEPTH,
+        iconImage: 'https://i.imgur.com/9ttK4ln.png',
+        icon: '<:z12DEPTH:1302571834604257281>',
+        rate: 0,
+        color: '#000000',
+        burnValue: 69_000
+    },
     [Rarity.GOD]: {
         index: 0,
         iconImage: 'https://i.imgur.com/PsgbH27.png',
@@ -43,7 +54,7 @@ const raritySettings: Record<Rarity, RaritySettings> = {
     [Rarity.SSS]: {
         index: 1,
         rarity: Rarity.SSS,
-        iconImage (series) {
+        iconImage(series) {
             if (series === Series.CHRISTMAS_2023) {
                 return 'https://i.imgur.com/T33wRt9.png';
             }
@@ -51,14 +62,14 @@ const raritySettings: Record<Rarity, RaritySettings> = {
                 return 'https://i.imgur.com/v39z5O4.png';
             }
             if (series === Series.HALLOWEEN_2024) {
-                return 'https://imgur.com/h0tGXu8.png';
+                return 'https://i.imgur.com/h0tGXu8.png';
             }
             if (series === Series.MASTER) {
                 return 'https://i.imgur.com/fQdjrqx.png';
             }
             return 'https://i.imgur.com/sgwb1vl.png';
         },
-        icon (series) {
+        icon(series) {
             if (series === Series.CHRISTMAS_2023) {
                 return '<:z11Christmas:1291975778249998376>';
             }
@@ -73,7 +84,7 @@ const raritySettings: Record<Rarity, RaritySettings> = {
             }
             return '<:z06SSS:1291975750089445487>';
         },
-        color (series) {
+        color(series) {
             if (series === Series.MASTER) {
                 return '#b153b9';
             }

@@ -188,7 +188,7 @@ const getTextBasedOnType = (type: PackOpeningType, username: string) => {
 export const showPackOpeningEmbed = async (interaction: Discord.Interaction, username: string, type: PackOpeningType, isDefer = true) => {
     if (!interaction.isRepliable()) {
         // no op function to make TS happy
-        return async () => {};
+        return async () => { };
     }
 
     const text = getTextBasedOnType(type, username);

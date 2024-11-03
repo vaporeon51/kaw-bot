@@ -142,6 +142,7 @@ export const getRarityScoredLeaderboard = async (options?: ExecuteSQLOptions): P
             card_to_user.user_id AS "user_id", 
             CASE cards.rarity_class
                 WHEN '${Rarity.GOD}' THEN 7290 
+                WHEN '${Rarity.DEPTH}' THEN 3000
                 WHEN '${Rarity.SSS}' THEN 2430
                 WHEN '${Rarity.SS}' THEN 810
                 WHEN '${Rarity.S}' THEN 270
@@ -394,14 +395,15 @@ export const getInventoryContents = async (
     JOIN cards ON groupedCounts.card_id = cards.id 
     ORDER BY
         CASE cards.rarity_class
-            WHEN '${Rarity.GOD}' THEN 0
-            WHEN '${Rarity.SSS}' THEN 1 
-            WHEN '${Rarity.SS}' THEN 2 
-            WHEN '${Rarity.S}' THEN 3 
-            WHEN '${Rarity.A}' THEN 4 
-            WHEN '${Rarity.B}' THEN 5 
-            WHEN '${Rarity.C}' THEN 6 
-            ELSE 7
+            WHEN '${Rarity.DEPTH}' THEN 0
+            WHEN '${Rarity.GOD}' THEN 1
+            WHEN '${Rarity.SSS}' THEN 2
+            WHEN '${Rarity.SS}' THEN 3
+            WHEN '${Rarity.S}' THEN 4
+            WHEN '${Rarity.A}' THEN 5
+            WHEN '${Rarity.B}' THEN 6
+            WHEN '${Rarity.C}' THEN 7
+            ELSE 8
         END ASC, cards.series DESC, groupedCounts.soulbound ASC, cards.group_name DESC, cards.member_name DESC`;
     const data = await DbConnectionHandler.getInstance().executeSQL(sql, options);
 
