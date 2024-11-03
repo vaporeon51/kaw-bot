@@ -21,6 +21,7 @@ export interface PackDetails {
 };
 
 export const SPECIAL_DROP_PACK_RARITY_RATES = {
+    [Rarity.DEPTH]: 0,
     [Rarity.GOD]: 0,
     [Rarity.SSS]: 3,
     [Rarity.SS]: 20,
@@ -32,6 +33,7 @@ export const SPECIAL_DROP_PACK_RARITY_RATES = {
 };
 
 export const COMMON_PACK_RARITY_RATES = {
+    [Rarity.DEPTH]: 0,
     [Rarity.GOD]: 1,
     [Rarity.SSS]: 9,
     [Rarity.SS]: 30,
@@ -117,7 +119,8 @@ export const seriesAliases: Record<Series, string[]> = {
     [Series.SERIES_3]: ['S3'],
     [Series.SERIES_4]: ['S4'],
     [Series.SUMMER_2024]: ['SMMR2024'],
-    [Series.HALLOWEEN_2024]: ['HLWN2024']
+    [Series.HALLOWEEN_2024]: ['HLWN2024'],
+    [Series.ADMIN]: ['ADMIN']
 };
 
 export const getPrimaryAliasForSeries = (series: Series) => {

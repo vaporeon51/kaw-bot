@@ -16,7 +16,7 @@ export const generatePagesBasedOnCards = (cards: CardData[]) => {
     return pages;
 };
 
-export function generateDatabaseEmbed (cards: CardData[], totalPages: number, page = 1) {
+export function generateDatabaseEmbed(cards: CardData[], totalPages: number, page = 1) {
     if (cards.length === 0 && page === 1) {
         return {
             ephemeral: true,

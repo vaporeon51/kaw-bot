@@ -25,7 +25,7 @@ const achievementConfigs: AchievementConfig[] = [
     { name: 'Card God', icon: '<:CardGod:1198247624189431859>', threshold: 48 }
 ];
 
-function getAchievementText (count: number): string {
+function getAchievementText(count: number): string {
     let closestName: string | null = null;
     let closestIcon: string | null = null;
     let closestThreshold = 0;
@@ -89,7 +89,7 @@ const command: CommandInterface = {
 
         const cardsDescriptionLine = [];
         const getIconForRarity = getInstanceConfig().getIconForRarity;
-        const rarityOrder = [Rarity.GOD, Rarity.SSS, Rarity.SS, Rarity.S, Rarity.A, Rarity.B, Rarity.C, Rarity.D];
+        const rarityOrder = [Rarity.DEPTH, Rarity.GOD, Rarity.SSS, Rarity.SS, Rarity.S, Rarity.A, Rarity.B, Rarity.C, Rarity.D];
         for (const rarity of rarityOrder) {
             const icon = getIconForRarity(rarity as Rarity, Series.SERIES_1);
             const amount = profileData.totalsByRarity.totalByRarity[rarity as Rarity];

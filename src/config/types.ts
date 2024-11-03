@@ -4,6 +4,7 @@ export enum CurrencyType {
 }
 
 export enum Rarity {
+    DEPTH = 'DEPTH',
     GOD = 'GOD',
     SSS = 'SSS',
     SS = 'SS',
@@ -22,7 +23,8 @@ export enum Series {
     CHRISTMAS_2023 = 'Christmas 2023',
     MASTER = 'Master',
     SUMMER_2024 = 'Summer 2024',
-    HALLOWEEN_2024 = 'Halloween 2024'
+    HALLOWEEN_2024 = 'Halloween 2024',
+    ADMIN = 'Admin'
 }
 
 export interface RarityRange {
