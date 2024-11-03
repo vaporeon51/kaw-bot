@@ -37,7 +37,7 @@ const raritySettings: Record<Rarity, RaritySettings> = {
         index: -10,
         rarity: Rarity.DEPTH,
         iconImage: 'https://i.imgur.com/9ttK4ln.png',
-        icon: '<:z12DEPTH:1302571834604257281>',
+        icon: '<:z12DEPTH:1302571832125423678>',
         rate: 0,
         color: '#000000',
         burnValue: 69_000
