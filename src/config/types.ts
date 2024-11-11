@@ -4,6 +4,7 @@ export enum CurrencyType {
 }
 
 export enum Rarity {
+    DEAD = 'DEAD',
     DEPTH = 'DEPTH',
     GOD = 'GOD',
     SSS = 'SSS',
