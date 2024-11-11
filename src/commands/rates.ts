@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import { type CommandInterface } from '../services/CommandInteractionManager';
 import GenerateDrop from '../services/GenerateDrop';
 import { getInstanceConfig } from '../config/config';
-import { Series, type Rarity } from '../config/types';
+import { Series, Rarity } from '../config/types';
 
 const command: CommandInterface = {
     name: 'rates',
@@ -33,6 +33,9 @@ const command: CommandInterface = {
         const embed = new Discord.EmbedBuilder();
         const descriptionLines = [];
         for (const rarity of Object.keys(rateDetails.raritySettings)) {
+            if (raritySettings[rarity as Rarity].index === -10) {
+                continue;
+            }
             const iconFnOrString = raritySettings[rarity as Rarity].icon;
             const icon = iconFnOrString instanceof Function ? iconFnOrString(Series.SERIES_1) : iconFnOrString;
             const pityRate = rateDetails.pityProgress[rarity as Rarity];
