@@ -51,7 +51,8 @@ export const getTotalCardsByRarity = async (userId: string, options?: ExecuteSQL
                 [Rarity.SSS]: 0,
                 [Rarity.GOD]: 0,
                 [Rarity.DEAD]: 0,
-                [Rarity.DEPTH]: 0
+                [Rarity.DEPTH]: 0,
+                [Rarity.CHARR]: 0
             },
             overallTotal: 0
         };

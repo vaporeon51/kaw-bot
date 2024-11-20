@@ -89,7 +89,7 @@ const command: CommandInterface = {
 
         const cardsDescriptionLine = [];
         const getIconForRarity = getInstanceConfig().getIconForRarity;
-        const rarityOrder = [Rarity.DEAD, Rarity.DEPTH, Rarity.GOD, Rarity.SSS, Rarity.SS, Rarity.S, Rarity.A, Rarity.B, Rarity.C, Rarity.D];
+        const rarityOrder = [Rarity.CHARR, Rarity.DEAD, Rarity.DEPTH, Rarity.GOD, Rarity.SSS, Rarity.SS, Rarity.S, Rarity.A, Rarity.B, Rarity.C, Rarity.D];
         for (const rarity of rarityOrder) {
             const icon = getIconForRarity(rarity as Rarity, Series.SERIES_1);
             const amount = profileData.totalsByRarity.totalByRarity[rarity as Rarity];
