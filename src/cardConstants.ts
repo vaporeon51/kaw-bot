@@ -21,6 +21,7 @@ export interface PackDetails {
 };
 
 export const SPECIAL_DROP_PACK_RARITY_RATES = {
+    [Rarity.CHARR]: 0,
     [Rarity.DEAD]: 0,
     [Rarity.DEPTH]: 0,
     [Rarity.GOD]: 0,
@@ -34,6 +35,7 @@ export const SPECIAL_DROP_PACK_RARITY_RATES = {
 };
 
 export const COMMON_PACK_RARITY_RATES = {
+    [Rarity.CHARR]: 0,
     [Rarity.DEAD]: 0,
     [Rarity.DEPTH]: 0,
     [Rarity.GOD]: 1,
@@ -101,7 +103,7 @@ export const packsForPurchase: PackDetails[] = [
         description: 'Will award one card from Series 4',
         soulboundOutput: false,
         series: Series.SERIES_4,
-        value: 69000,
+        value: 5000,
         async generatorFn() {
             return await GenerateDrop.getInstance().getCardToDrop({
                 series: Series.SERIES_4,

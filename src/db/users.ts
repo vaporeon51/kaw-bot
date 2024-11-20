@@ -142,6 +142,7 @@ export const getRarityScoredLeaderboard = async (options?: ExecuteSQLOptions): P
             card_to_user.user_id AS "user_id", 
             CASE cards.rarity_class
                 WHEN '${Rarity.GOD}' THEN 7290
+                WHEN '${Rarity.CHARR}' THEN 3000
                 WHEN '${Rarity.DEAD}' THEN 3000
                 WHEN '${Rarity.DEPTH}' THEN 3000
                 WHEN '${Rarity.SSS}' THEN 2430
@@ -396,16 +397,17 @@ export const getInventoryContents = async (
     JOIN cards ON groupedCounts.card_id = cards.id 
     ORDER BY
         CASE cards.rarity_class
-            WHEN '${Rarity.DEAD}' THEN 0
-            WHEN '${Rarity.DEPTH}' THEN 1
-            WHEN '${Rarity.GOD}' THEN 2
-            WHEN '${Rarity.SSS}' THEN 3
-            WHEN '${Rarity.SS}' THEN 4
-            WHEN '${Rarity.S}' THEN 5
-            WHEN '${Rarity.A}' THEN 6
-            WHEN '${Rarity.B}' THEN 7
-            WHEN '${Rarity.C}' THEN 8
-            ELSE 9
+            WHEN '${Rarity.CHARR}' THEN 0
+            WHEN '${Rarity.DEAD}' THEN 1
+            WHEN '${Rarity.DEPTH}' THEN 2
+            WHEN '${Rarity.GOD}' THEN 3
+            WHEN '${Rarity.SSS}' THEN 4
+            WHEN '${Rarity.SS}' THEN 5
+            WHEN '${Rarity.S}' THEN 6
+            WHEN '${Rarity.A}' THEN 7
+            WHEN '${Rarity.B}' THEN 8
+            WHEN '${Rarity.C}' THEN 9
+            ELSE 10
         END ASC, cards.series DESC, groupedCounts.soulbound ASC, cards.group_name DESC, cards.member_name DESC`;
     const data = await DbConnectionHandler.getInstance().executeSQL(sql, options);
 
@@ -444,16 +446,17 @@ export const getInventoryContentsWithFilters = async (
     ${buildAllCardsWhereClause(rarityFilter, groupFilter, memberFilter, seriesFilter, soulboundFilter, 'cards', false)}
     ORDER BY
         CASE cards.rarity_class
-            WHEN '${Rarity.DEAD}' THEN 0
-            WHEN '${Rarity.DEPTH}' THEN 1
-            WHEN '${Rarity.GOD}' THEN 2
-            WHEN '${Rarity.SSS}' THEN 3
-            WHEN '${Rarity.SS}' THEN 4
-            WHEN '${Rarity.S}' THEN 5
-            WHEN '${Rarity.A}' THEN 6
-            WHEN '${Rarity.B}' THEN 7
-            WHEN '${Rarity.C}' THEN 8
-            ELSE 9
+            WHEN '${Rarity.CHARR}' THEN 0
+            WHEN '${Rarity.DEAD}' THEN 1
+            WHEN '${Rarity.DEPTH}' THEN 2
+            WHEN '${Rarity.GOD}' THEN 3
+            WHEN '${Rarity.SSS}' THEN 4
+            WHEN '${Rarity.SS}' THEN 5
+            WHEN '${Rarity.S}' THEN 6
+            WHEN '${Rarity.A}' THEN 7
+            WHEN '${Rarity.B}' THEN 8
+            WHEN '${Rarity.C}' THEN 9
+            ELSE 10
         END ASC, cards.series DESC, groupedCounts.soulbound ASC, cards.group_name DESC, cards.member_name DESC`;
     const data = await DbConnectionHandler.getInstance().executeSQL(sql, options);
 

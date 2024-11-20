@@ -81,16 +81,17 @@ export const getMissingCardsForUser = async (
     WHERE card_to_user.id IS NULL ${whereClause}
     ORDER BY
         CASE cards.rarity_class
-            WHEN '${Rarity.DEAD}' THEN 0
-            WHEN '${Rarity.DEPTH}' THEN 1
-            WHEN '${Rarity.GOD}' THEN 2
-            WHEN '${Rarity.SSS}' THEN 3
-            WHEN '${Rarity.SS}' THEN 4
-            WHEN '${Rarity.S}' THEN 5
-            WHEN '${Rarity.A}' THEN 6
-            WHEN '${Rarity.B}' THEN 7
-            WHEN '${Rarity.C}' THEN 8
-            ELSE 9
+            WHEN '${Rarity.CHARR}' THEN 0
+            WHEN '${Rarity.DEAD}' THEN 1
+            WHEN '${Rarity.DEPTH}' THEN 2
+            WHEN '${Rarity.GOD}' THEN 3
+            WHEN '${Rarity.SSS}' THEN 4
+            WHEN '${Rarity.SS}' THEN 5
+            WHEN '${Rarity.S}' THEN 6
+            WHEN '${Rarity.A}' THEN 7
+            WHEN '${Rarity.B}' THEN 8
+            WHEN '${Rarity.C}' THEN 9
+            ELSE 10
         END ASC, cards.series DESC, cards.group_name DESC, cards.member_name DESC`;
     const response = await DbConnectionHandler.getInstance().executeSQL(sql);
     if (response.rowCount === 0) {
@@ -111,16 +112,17 @@ export const getAllCards = async (
     ${whereClause}
     ORDER BY
         CASE cards.rarity_class
-            WHEN '${Rarity.DEAD}' THEN 0
-            WHEN '${Rarity.DEPTH}' THEN 1
-            WHEN '${Rarity.GOD}' THEN 2
-            WHEN '${Rarity.SSS}' THEN 3
-            WHEN '${Rarity.SS}' THEN 4
-            WHEN '${Rarity.S}' THEN 5
-            WHEN '${Rarity.A}' THEN 6
-            WHEN '${Rarity.B}' THEN 7
-            WHEN '${Rarity.C}' THEN 8
-            ELSE 9
+            WHEN '${Rarity.CHARR}' THEN 0
+            WHEN '${Rarity.DEAD}' THEN 1
+            WHEN '${Rarity.DEPTH}' THEN 2
+            WHEN '${Rarity.GOD}' THEN 3
+            WHEN '${Rarity.SSS}' THEN 4
+            WHEN '${Rarity.SS}' THEN 5
+            WHEN '${Rarity.S}' THEN 6
+            WHEN '${Rarity.A}' THEN 7
+            WHEN '${Rarity.B}' THEN 8
+            WHEN '${Rarity.C}' THEN 9
+            ELSE 10
         END ASC, cards.series DESC, cards.group_name DESC, cards.member_name DESC`;
     const response = await DbConnectionHandler.getInstance().executeSQL(sql);
     if (response.rowCount === 0) {

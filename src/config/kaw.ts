@@ -33,6 +33,15 @@ const BOT_ANNOUCEMENT_CHANNEL_DEV = '1291966056340000802';
 const BOT_ANNOUCEMENT_CHANNEL_PROD = '1291612688966881321';
 
 const raritySettings: Record<Rarity, RaritySettings> = {
+    [Rarity.CHARR]: {
+        index: -10,
+        rarity: Rarity.CHARR,
+        iconImage: 'https://i.imgur.com/Ct3a526.png',
+        icon: '<:z12CHARR:1302571841843626025>',
+        rate: 0,
+        color: '#000000',
+        burnValue: 69_000
+    },
     [Rarity.DEAD]: {
         index: -10,
         rarity: Rarity.DEAD,
