@@ -24,6 +24,8 @@ export const SPECIAL_DROP_PACK_RARITY_RATES = {
     [Rarity.CHARR]: 0,
     [Rarity.DEAD]: 0,
     [Rarity.DEPTH]: 0,
+    [Rarity.LEMON]: 0,
+    [Rarity.QUEEN]: 0,
     [Rarity.GOD]: 0,
     [Rarity.SSS]: 3,
     [Rarity.SS]: 20,
@@ -38,6 +40,8 @@ export const COMMON_PACK_RARITY_RATES = {
     [Rarity.CHARR]: 0,
     [Rarity.DEAD]: 0,
     [Rarity.DEPTH]: 0,
+    [Rarity.LEMON]: 0,
+    [Rarity.QUEEN]: 0,
     [Rarity.GOD]: 1,
     [Rarity.SSS]: 9,
     [Rarity.SS]: 30,
@@ -112,6 +116,38 @@ export const packsForPurchase: PackDetails[] = [
             });
         },
         enabled: true
+    },
+    {
+        id: 'CHRISTMAS_2023_PACK',
+        name: 'Christmas 2023 Pack',
+        description: 'Will award one card from Christmas 2023',
+        soulboundOutput: false,
+        series: Series.CHRISTMAS_2023,
+        value: 69000,
+        async generatorFn() {
+            return await GenerateDrop.getInstance().getCardToDrop({
+                rarityInput: Rarity.SSS,
+                series: Series.CHRISTMAS_2023,
+                onlyDroppableCards: false
+            });
+        },
+        enabled: true
+    },
+    {
+        id: 'CHRISTMAS_2024_PACK',
+        name: 'Christmas 2024 Pack',
+        description: 'Will award one card from Christmas 2024',
+        soulboundOutput: false,
+        series: Series.CHRISTMAS_2024,
+        value: 69000,
+        async generatorFn() {
+            return await GenerateDrop.getInstance().getCardToDrop({
+                rarityInput: Rarity.SSS,
+                series: Series.CHRISTMAS_2024,
+                onlyDroppableCards: false
+            });
+        },
+        enabled: true
     }
 ];
 
@@ -124,7 +160,9 @@ export const seriesAliases: Record<Series, string[]> = {
     [Series.SERIES_4]: ['S4'],
     [Series.SUMMER_2024]: ['SMMR2024'],
     [Series.HALLOWEEN_2024]: ['HLWN2024'],
-    [Series.ADMIN]: ['ADMIN']
+    [Series.ADMIN]: ['ADMIN'],
+    [Series.CHRISTMAS_2024]: ['XMAS2024'],
+    [Series.MAMA_2024]: ['MAMA2024']
 };
 
 export const getPrimaryAliasForSeries = (series: Series) => {

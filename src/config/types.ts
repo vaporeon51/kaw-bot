@@ -7,6 +7,8 @@ export enum Rarity {
     CHARR = 'CHARR',
     DEAD = 'DEAD',
     DEPTH = 'DEPTH',
+    LEMON = 'LEMON',
+    QUEEN = 'QUEEN',
     GOD = 'GOD',
     SSS = 'SSS',
     SS = 'SS',
@@ -26,7 +28,9 @@ export enum Series {
     MASTER = 'Master',
     SUMMER_2024 = 'Summer 2024',
     HALLOWEEN_2024 = 'Halloween 2024',
-    ADMIN = 'Admin'
+    ADMIN = 'Admin',
+    CHRISTMAS_2024 = 'Christmas 2024',
+    MAMA_2024 = 'MAMA 2024'
 }
 
 export interface RarityRange {
