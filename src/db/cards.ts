@@ -84,14 +84,16 @@ export const getMissingCardsForUser = async (
             WHEN '${Rarity.CHARR}' THEN 0
             WHEN '${Rarity.DEAD}' THEN 1
             WHEN '${Rarity.DEPTH}' THEN 2
-            WHEN '${Rarity.GOD}' THEN 3
-            WHEN '${Rarity.SSS}' THEN 4
-            WHEN '${Rarity.SS}' THEN 5
-            WHEN '${Rarity.S}' THEN 6
-            WHEN '${Rarity.A}' THEN 7
-            WHEN '${Rarity.B}' THEN 8
-            WHEN '${Rarity.C}' THEN 9
-            ELSE 10
+            WHEN '${Rarity.LEMON}' THEN 3
+            WHEN '${Rarity.QUEEN}' THEN 4
+            WHEN '${Rarity.GOD}' THEN 5
+            WHEN '${Rarity.SSS}' THEN 6
+            WHEN '${Rarity.SS}' THEN 7
+            WHEN '${Rarity.S}' THEN 8
+            WHEN '${Rarity.A}' THEN 9
+            WHEN '${Rarity.B}' THEN 10
+            WHEN '${Rarity.C}' THEN 11
+            ELSE 12
         END ASC, cards.series DESC, cards.group_name DESC, cards.member_name DESC`;
     const response = await DbConnectionHandler.getInstance().executeSQL(sql);
     if (response.rowCount === 0) {
@@ -115,14 +117,16 @@ export const getAllCards = async (
             WHEN '${Rarity.CHARR}' THEN 0
             WHEN '${Rarity.DEAD}' THEN 1
             WHEN '${Rarity.DEPTH}' THEN 2
-            WHEN '${Rarity.GOD}' THEN 3
-            WHEN '${Rarity.SSS}' THEN 4
-            WHEN '${Rarity.SS}' THEN 5
-            WHEN '${Rarity.S}' THEN 6
-            WHEN '${Rarity.A}' THEN 7
-            WHEN '${Rarity.B}' THEN 8
-            WHEN '${Rarity.C}' THEN 9
-            ELSE 10
+            WHEN '${Rarity.LEMON}' THEN 3
+            WHEN '${Rarity.QUEEN}' THEN 4
+            WHEN '${Rarity.GOD}' THEN 5
+            WHEN '${Rarity.SSS}' THEN 6
+            WHEN '${Rarity.SS}' THEN 7
+            WHEN '${Rarity.S}' THEN 8
+            WHEN '${Rarity.A}' THEN 9
+            WHEN '${Rarity.B}' THEN 10
+            WHEN '${Rarity.C}' THEN 11
+            ELSE 12
         END ASC, cards.series DESC, cards.group_name DESC, cards.member_name DESC`;
     const response = await DbConnectionHandler.getInstance().executeSQL(sql);
     if (response.rowCount === 0) {

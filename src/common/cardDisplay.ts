@@ -166,7 +166,7 @@ export enum PackOpeningType {
 const getGifForPackType = (type: PackOpeningType) => {
     switch (type) {
         case PackOpeningType.NORMAL:
-            return { url: 'https://i.imgur.com/UX4OG35.gif', duration: 3_200 };
+            return { url: 'https://i.imgur.com/25UtGXX.gif', duration: 3_200 };
         case PackOpeningType.CRAFT_REROLL:
             return { url: 'https://i.imgur.com/mYtYg7y.gif', duration: 4_700 };
         case PackOpeningType.CRAFT_UPGRADE:

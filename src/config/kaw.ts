@@ -11,7 +11,9 @@ const roleSettingsDev: Record<Series, string> = {
     [Series.CHRISTMAS_2023]: '',
     [Series.SUMMER_2024]: '',
     [Series.HALLOWEEN_2024]: '',
-    [Series.ADMIN]: ''
+    [Series.ADMIN]: '',
+    [Series.CHRISTMAS_2024]: '',
+    [Series.MAMA_2024]: ''
 };
 
 const roleSettingsProd: Record<Series, string> = {
@@ -23,7 +25,9 @@ const roleSettingsProd: Record<Series, string> = {
     [Series.CHRISTMAS_2023]: '',
     [Series.SUMMER_2024]: '',
     [Series.HALLOWEEN_2024]: '',
-    [Series.ADMIN]: ''
+    [Series.ADMIN]: '',
+    [Series.CHRISTMAS_2024]: '',
+    [Series.MAMA_2024]: ''
 };
 
 const quizRatingEpochStartDev = 1706313600000;
@@ -60,6 +64,24 @@ const raritySettings: Record<Rarity, RaritySettings> = {
         color: '#000000',
         burnValue: 69_000
     },
+    [Rarity.LEMON]: {
+        index: -10,
+        rarity: Rarity.LEMON,
+        iconImage: 'https://i.imgur.com/6hXUkat.png',
+        icon: '<:z12LEMON:1302571839360466944>',
+        rate: 0,
+        color: '#000000',
+        burnValue: 69_000
+    },
+    [Rarity.QUEEN]: {
+        index: -10,
+        rarity: Rarity.QUEEN,
+        iconImage: 'https://i.imgur.com/Oi88D8N.png',
+        icon: '<:z11QUEEN:1302562389320794142>',
+        rate: 0,
+        color: '#947803',
+        burnValue: 5_000
+    },
     [Rarity.GOD]: {
         index: 0,
         iconImage: 'https://i.imgur.com/PsgbH27.png',
@@ -73,7 +95,7 @@ const raritySettings: Record<Rarity, RaritySettings> = {
         index: 1,
         rarity: Rarity.SSS,
         iconImage(series) {
-            if (series === Series.CHRISTMAS_2023) {
+            if (series === Series.CHRISTMAS_2023 || series === Series.CHRISTMAS_2024) {
                 return 'https://i.imgur.com/T33wRt9.png';
             }
             if (series === Series.SUMMER_2024) {
@@ -88,7 +110,7 @@ const raritySettings: Record<Rarity, RaritySettings> = {
             return 'https://i.imgur.com/sgwb1vl.png';
         },
         icon(series) {
-            if (series === Series.CHRISTMAS_2023) {
+            if (series === Series.CHRISTMAS_2023 || series === Series.CHRISTMAS_2024) {
                 return '<:z11Christmas:1291975778249998376>';
             }
             if (series === Series.SUMMER_2024) {
